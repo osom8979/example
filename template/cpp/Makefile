@@ -1,8 +1,11 @@
+#.SUFFIXES: .cpp .o
+
 CXX=g++
 EXE_EXT=.out
 OBJ_EXT=.o
 TARGET=a${EXE_EXT}
-OBJS=main${OBJ_EXT}
+FILES=main test01
+OBJS=${FILES:=${OBJ_EXT}}
 FLAGS=-Wall -std=c++11
 DEBUG=-g
 LIBS=pthread
@@ -13,7 +16,7 @@ DEBUG_OBJS=${OBJS:${OBJ_EXT}=${DEBUG}${OBJ_EXT}}
 
 .PONEY=all clean release debug
 
-all: release
+all: release debug
 
 release: ${TARGET}
 
