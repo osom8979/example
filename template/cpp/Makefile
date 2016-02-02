@@ -5,11 +5,11 @@ EXE_EXT=.out
 OBJ_EXT=.o
 TARGET=a${EXE_EXT}
 FILES=main test01
-OBJS=${FILES:=${OBJ_EXT}}
+OBJS=${FILES:%=%${OBJ_EXT}}
 FLAGS=-Wall -std=c++11
 DEBUG=-g
 LIBS=pthread
-LIBS_FLAGS=${addsuffix ${LIBS},-l}
+LIBS_FLAGS=${LIBS:%=-l%}
 
 DEBUG_TARGET=${TARGET:${EXE_EXT}=${DEBUG}${EXE_EXT}}
 DEBUG_OBJS=${OBJS:${OBJ_EXT}=${DEBUG}${OBJ_EXT}}
