@@ -30,8 +30,8 @@ int main(int argc, char ** argv)
     cout << "Call test number: " << test_number << endl;
 
     switch (test_number) {
-    case 1:
-        return test01(arg_vec);
+    case  1: return test01(arg_vec);
+    case  2: return test02(arg_vec);
 
     default:
         cout << "Undefined test number.\n";

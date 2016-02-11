@@ -4,7 +4,7 @@ CXX=g++
 EXE_EXT=.out
 OBJ_EXT=.o
 TARGET=a${EXE_EXT}
-FILES=main test01
+FILES=main test01 test02
 OBJS=${FILES:%=%${OBJ_EXT}}
 FLAGS=-Wall -Wno-overloaded-virtual -std=c++11
 DEBUG=-g
