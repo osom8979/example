@@ -1,0 +1,634 @@
+
+#include <iostream>
+#include <vector>
+#include <string>
+#include <memory>
+#include <atomic>
+#include <mutex>
+#include <thread>
+
+extern "C" {
+#include <libavcodec/avcodec.h>
+#include <libavformat/avformat.h>
+#include <libswscale/swscale.h>
+#include <libavutil/avutil.h>
+#include <libavutil/pixdesc.h>
+}
+
+#include <opencv/cv.h>
+#include <opencv/highgui.h>
+
+#define _RGB_CHANNEL_SIZE  3
+#define _GRAY_CHANNEL_SIZE 1
+
+std::shared_ptr<IplImage> createSharedImage(int width, int height, int depth, int channels)
+{
+    assert(width > 0);
+    assert(height > 0);
+    assert(depth == IPL_DEPTH_8U);
+    assert(channels == 1 || channels == 3 );
+
+    return std::shared_ptr<IplImage>(cvCreateImage(cvSize(width, height), depth, channels)
+            , [](IplImage * image) {
+        cvReleaseImage(&image);
+    });
+}
+
+IplImage * createRgb24IplImage(AVFrame const * frame)
+{
+    int width = frame->width;
+    int height = frame->height;
+
+    AVPixelFormat src_format = static_cast<AVPixelFormat>(frame->format);
+    AVPixelFormat dest_format = AV_PIX_FMT_BGR24;
+
+    int flags = SWS_BILINEAR;
+    SwsFilter * src_filter = nullptr;
+    SwsFilter * dest_filter = nullptr;
+    double const * param = nullptr;
+
+    struct SwsContext * scaler = sws_getContext(width, height, src_format
+            , width, height, dest_format, flags, src_filter, dest_filter, param);
+
+    if (scaler == nullptr) {
+        return nullptr;
+    }
+
+    IplImage * image = cvCreateImage(cvSize(width, height), IPL_DEPTH_8U, _RGB_CHANNEL_SIZE);
+    int linesize[4] = { image->widthStep, 0, 0, 0 };
+
+    sws_scale(scaler, frame->data, frame->linesize, 0, frame->height
+            , (uint8_t **) & (image->imageData), linesize);
+
+    return image;
+}
+
+IplImage * createRgb24IplImage(uint8_t const * src, int width, int height, int linesize)
+{
+    uint8_t const * src_cursor = NULL;
+    uint8_t * dest_cursor = NULL;
+
+    IplImage * image = cvCreateImage(cvSize(width, height), IPL_DEPTH_8U, _RGB_CHANNEL_SIZE);
+    for (int y = 0; y < height; y++) {
+        src_cursor = (src + y * linesize);
+        dest_cursor = (uint8_t *) (image->imageData + y * image->widthStep);
+
+        for (int x = 0; x < width; x++) {
+            // BGR24 Format Copy.
+            dest_cursor[3 * x + 2] = src_cursor[3 * x + 2]; // r
+            dest_cursor[3 * x + 1] = src_cursor[3 * x + 1]; // g
+            dest_cursor[3 * x + 0] = src_cursor[3 * x + 0]; // b
+        }
+    }
+
+    return image;
+}
+
+IplImage * createGrayIplImage(uint8_t const * src, int width, int height, int linesize)
+{
+    uint8_t const * src_cursor = NULL;
+    uint8_t * dest_cursor = NULL;
+
+    IplImage * image = cvCreateImage(cvSize(width, height), IPL_DEPTH_8U, _GRAY_CHANNEL_SIZE);
+    for (int y = 0; y < height; y++) {
+        src_cursor = (src + y * linesize);
+        dest_cursor = (uint8_t *) (image->imageData + y * image->widthStep);
+
+        for (int x = 0; x < width; x++) {
+            dest_cursor[3 * x] = src_cursor[3 * x];
+        }
+    }
+
+    return image;
+}
+
+class AvDecoder
+{
+public:
+    enum class ErrorCode : int
+    {
+        NOTING = 0,
+        ERROR_OR_EOF,
+        ERROR_MISMATCH_STREAM_INDEX,
+        NO_FRAME,
+    };
+
+public:
+    /// @brief Not found video stream index.
+    static int const NOT_FOUND_VIDEO_STREAM_INDEX;
+
+private:
+    std::size_t _stream_index;
+    bool _ready;
+
+private:
+    AVFormatContext * _format_context;
+    AVCodecContext * _codec_context;
+    SwsContext * _scaler;
+
+private:
+    AVFrame * _original_frame;
+    AVFrame * _scaled_frame;
+
+private:
+    int _output_width;
+    int _output_height;
+    int _output_format; ///< AVPixelFormat
+
+public:
+    AvDecoder();
+    ~AvDecoder();
+
+public:
+    inline void set_stream_index(std::size_t const & index)
+    {
+        _stream_index = index;
+    }
+    inline std::size_t get_stream_index() const
+    {
+        return _stream_index;
+    }
+    inline bool isReady() const
+    {
+        return _ready;
+    }
+    inline AVFrame * get_original_frame() const
+    {
+        return _original_frame;
+    }
+    inline AVFrame * get_scaled_frame() const
+    {
+        return _scaled_frame;
+    }
+    inline int get_output_width() const
+    {
+        return _output_width;
+    }
+    inline int get_output_height() const
+    {
+        return _output_height;
+    }
+    inline int get_output_format() const
+    {
+        return _output_format;
+    }
+
+// Buffer operators.
+private:
+    std::size_t _buffer_size;
+    uint8_t * _buffer;
+private:
+    bool initBuffer(std::size_t const & size);
+    void releaseBuffer();
+
+// stream methods.
+public:
+    std::size_t get_stream_count() const;
+    AVStream * get_stream(std::size_t const & index) const;
+public:
+    std::vector<int> getIndexList(int const & av_media_type);
+    std::vector<int> getVideoIndexList();
+    std::vector<int> getAudioIndexList();
+    std::vector<int> getSubtitleIndexList();
+public:
+    double getFrameRate(int const & stream_index);
+    int64_t getFrameStartTime(int const & stream_index);
+    int64_t getFrameDuration(int const & stream_index);
+    int64_t getFrameCount(int const & stream_index);
+
+    double getFrameRate();
+    int64_t getFrameStartTime();
+    int64_t getFrameDuration();
+    int64_t getFrameCount();
+    int64_t getGeneralDuration();
+
+// Scaler methods.
+private:
+    void set_output_info(int const & width, int const & height, int const & format);
+    bool initScaler(int const & width, int const & height, int const & format);
+    void releaseScaler();
+
+// User's common operators.
+public:
+    bool open(const char * path);
+    void close();
+
+public:
+    using FramePacket = std::shared_ptr<AVPacket>;
+private:
+    FramePacket _packet;
+public:
+    ErrorCode readNextFrame(int const & stream_index);
+    ErrorCode readNextFrame();
+};
+
+// ---------------
+// Implementation.
+// ---------------
+
+int const AvDecoder::NOT_FOUND_VIDEO_STREAM_INDEX = -1;
+
+
+AvDecoder::AvDecoder()
+        : _stream_index(NOT_FOUND_VIDEO_STREAM_INDEX), _ready(false)
+        , _format_context(nullptr), _codec_context(nullptr), _scaler(nullptr)
+        , _original_frame(nullptr), _scaled_frame(nullptr), _packet(nullptr)
+{
+    static std::once_flag register_flag;
+    std::call_once(register_flag, [](){
+                av_register_all();
+                avformat_network_init();
+            });
+
+    _output_width = 0;
+    _output_height = 0;
+    _output_format = 0;
+
+    // Buffer operators.
+    _buffer_size = 0;
+    _buffer = nullptr;
+}
+
+AvDecoder::~AvDecoder()
+{
+    close();
+}
+
+// ----------------
+// Buffer operator.
+// ----------------
+
+bool AvDecoder::initBuffer(std::size_t const & size)
+{
+    if (size == 0) {
+        return false;
+    }
+
+    _buffer = static_cast<uint8_t*>(av_malloc(size * sizeof(uint8_t)));
+    _buffer_size = size;
+    return true;
+}
+
+void AvDecoder::releaseBuffer()
+{
+    if (_buffer != nullptr) {
+        av_free(_buffer);
+        _buffer = nullptr;
+    }
+    _buffer_size = 0;
+}
+
+// ---------------
+// stream methods.
+// ---------------
+
+std::size_t AvDecoder::get_stream_count() const
+{
+    if (_format_context != nullptr) {
+        return _format_context->nb_streams;
+    }
+    return 0;
+}
+
+AVStream * AvDecoder::get_stream(std::size_t const & index) const
+{
+    if (_format_context != nullptr || index >= _format_context->nb_streams) {
+        return _format_context->streams[index];
+    }
+    return nullptr;
+}
+
+std::vector<int> AvDecoder::getIndexList(int const & av_media_type)
+{
+    std::vector<int> result;
+    if (_format_context == nullptr) {
+        return result;
+    }
+
+    std::size_t const kStreamCount = get_stream_count();
+    for (std::size_t cursor = 0; cursor < kStreamCount; ++cursor) {
+        AVStream * stream = get_stream(cursor);
+
+        if (stream != nullptr && stream->codec->codec_type == av_media_type) {
+            result.push_back(cursor);
+        }
+    }
+    return std::move(result);
+}
+
+std::vector<int> AvDecoder::getVideoIndexList()
+{
+    return std::move(getIndexList(AVMEDIA_TYPE_VIDEO));
+}
+
+std::vector<int> AvDecoder::getAudioIndexList()
+{
+    return std::move(getIndexList(AVMEDIA_TYPE_AUDIO));
+}
+
+std::vector<int> AvDecoder::getSubtitleIndexList()
+{
+    return std::move(getIndexList(AVMEDIA_TYPE_SUBTITLE));
+}
+
+double AvDecoder::getFrameRate(int const & stream_index)
+{
+    AVRational frame_rate = _format_context->streams[stream_index]->r_frame_rate;
+    return static_cast<double>(frame_rate.num) / static_cast<double>(frame_rate.den);
+}
+
+int64_t AvDecoder::getFrameStartTime(int const & stream_index)
+{
+    return _format_context->streams[stream_index]->start_time;
+}
+
+int64_t AvDecoder::getFrameDuration(int const & stream_index)
+{
+    return _format_context->streams[stream_index]->duration;
+}
+
+int64_t AvDecoder::getFrameCount(int const & stream_index)
+{
+    return _format_context->streams[stream_index]->nb_frames;
+}
+
+double AvDecoder::getFrameRate()
+{
+    return getFrameRate(_stream_index);
+}
+int64_t AvDecoder::getFrameStartTime()
+{
+    return getFrameStartTime(_stream_index);
+}
+int64_t AvDecoder::getFrameDuration()
+{
+    return getFrameDuration(_stream_index);
+}
+int64_t AvDecoder::getFrameCount()
+{
+    return getFrameCount(_stream_index);
+}
+int64_t AvDecoder::getGeneralDuration()
+{
+    return _format_context->duration;
+}
+
+// ---------------
+// Scaler methods.
+// ---------------
+
+void AvDecoder::set_output_info(int const & width, int const & height, int const & format)
+{
+    _output_width = width;
+    _output_height = height;
+    _output_format = format;
+}
+
+bool AvDecoder::initScaler(int const & width, int const & height, int const & format)
+{
+    if (_codec_context == nullptr || width == 0 || height == 0) {
+        return false;
+    }
+
+    auto const kFalseCallback = [&]() {
+        set_output_info(0, 0, 0);
+        releaseScaler();
+    };
+
+    set_output_info(width, height, format);
+
+    // Find the decoder for the video stream.
+    AVCodec * codec = avcodec_find_decoder(_codec_context->codec_id);
+    if (codec == nullptr) {
+        kFalseCallback();
+        return false;
+    }
+
+    // Open codec.
+    AVDictionary * options = nullptr;
+    if (avcodec_open2(_codec_context, codec, &options) < 0) {
+        kFalseCallback();
+        return false;
+    }
+
+    int source_width = _codec_context->width;
+    int source_height = _codec_context->height;
+    AVPixelFormat source_format = _codec_context->pix_fmt;
+    AVPixelFormat destination_format = static_cast<AVPixelFormat>(_output_format);
+
+    int kDefaultFlags = SWS_BILINEAR;
+    SwsFilter * kSrcFilter = nullptr;
+    SwsFilter * kDstFilter = nullptr;
+    const double * kParam = nullptr;
+
+    _scaler = sws_getContext(source_width, source_height, source_format, _output_width,
+            _output_height, static_cast<AVPixelFormat>(_output_format), kDefaultFlags, kSrcFilter,
+            kDstFilter, kParam);
+
+    // Allocate video frame
+    _original_frame = av_frame_alloc();
+    _scaled_frame = av_frame_alloc();
+
+    if (_original_frame == nullptr || _scaled_frame == nullptr) {
+        kFalseCallback();
+        return false;
+    }
+
+    releaseBuffer();
+    int picture_size = avpicture_get_size(destination_format, _output_width, _output_height);
+    if (initBuffer(picture_size) == true) {
+        picture_size = avpicture_fill((AVPicture*)_scaled_frame, _buffer,
+                destination_format, _output_width, _output_height);
+    }
+
+    if (picture_size < 0) {
+        kFalseCallback();
+        return false;
+    }
+
+    return true;
+}
+
+void AvDecoder::releaseScaler()
+{
+    if (_original_frame != nullptr) {
+        av_free(_original_frame);
+        _original_frame = nullptr;
+    }
+    if (_scaled_frame != nullptr) {
+        av_free(_scaled_frame);
+        _scaled_frame = nullptr;
+    }
+    if (_scaler != nullptr) {
+        sws_freeContext(_scaler);
+        _scaler = nullptr;
+    }
+}
+
+// ------------------------
+// User's common operators.
+// ------------------------
+
+bool AvDecoder::open(const char * path)
+{
+    _ready = false;
+    _stream_index = NOT_FOUND_VIDEO_STREAM_INDEX;
+
+    if (avformat_open_input(&_format_context, path, nullptr, nullptr) != 0) {
+        return false;
+    }
+
+    // Retrieve stream information.
+    if (avformat_find_stream_info(_format_context, nullptr) < 0) {
+        return false;
+    }
+
+    // dump information about file onto standard error.
+    // av_dump_format(_format_context, 0, path, 0);
+
+    // Find the first video stream.
+    std::vector<int> video_index_list = getVideoIndexList();
+    if (video_index_list.size() > 0) {
+        // first stream index setting.
+        _stream_index = video_index_list.front();
+    } else {
+        // Can't find a video stream.
+        return false;
+    }
+
+    //{ // Setup CodecContext & Scaler.
+    _codec_context = _format_context->streams[_stream_index]->codec;
+    _ready = initScaler(_codec_context->width, _codec_context->height, PIX_FMT_BGR24);
+    //}
+
+    return _ready;
+}
+
+void AvDecoder::close()
+{
+    _ready = false;
+    _stream_index = NOT_FOUND_VIDEO_STREAM_INDEX;
+
+    releaseScaler();
+    releaseBuffer();
+
+    if (_codec_context != nullptr) {
+        avcodec_close(_codec_context);
+        _codec_context = nullptr;
+    }
+    if (_format_context != nullptr) {
+        avformat_close_input(&_format_context);
+        _format_context = nullptr;
+    }
+}
+
+AvDecoder::ErrorCode AvDecoder::readNextFrame(int const & stream_index)
+{
+    _packet.reset(new (std::nothrow) AVPacket(), [](AVPacket * packet){
+                av_free_packet(packet);
+            });
+    // av_init_packet(packet);
+
+    if (av_read_frame(_format_context, _packet.get()) < 0) {
+        return ErrorCode::ERROR_OR_EOF;
+    }
+
+    if (stream_index != _packet->stream_index) {
+        return ErrorCode::ERROR_MISMATCH_STREAM_INDEX;
+    }
+
+    int got_picture_ptr = 0;
+    avcodec_decode_video2(_codec_context, _original_frame, &got_picture_ptr, _packet.get());
+
+    if (got_picture_ptr == 0) {
+        return ErrorCode::NO_FRAME;
+    }
+
+    sws_scale(_scaler, (uint8_t const * const *) _original_frame->data,
+            _original_frame->linesize, 0, _codec_context->height
+            , _scaled_frame->data, _scaled_frame->linesize);
+
+    // av_free_packet(_packet.get());
+    return ErrorCode::NOTING;
+}
+
+AvDecoder::ErrorCode AvDecoder::readNextFrame()
+{
+    return readNextFrame(_stream_index);
+}
+
+int main(int argc, char ** argv)
+{
+    if (argc <= 1) {
+        std::cerr << "Usage: " << argv[0] << " {path|url}\n";
+        return 1;
+    }
+
+    using SharedImage = std::shared_ptr<IplImage>;
+    using ImageVector = std::vector<SharedImage>;
+
+    std::string const WINDOW_TITLE = "CAMERA";
+    std::string const PATH = argv[1];
+    ImageVector buffer;
+
+    AvDecoder av;
+    bool is_open = av.open(PATH.c_str());
+    if (is_open == false) {
+        std::cerr << "Not found file: " << PATH << std::endl;
+        return 1;
+    }
+
+    using ErrorCode = AvDecoder::ErrorCode;
+
+    AVFrame * frame = nullptr;
+    int width = av.get_output_width();
+    int height = av.get_output_height();
+    int linesize = 0;
+    // int depth = 3;
+
+    bool exit_flag = false;
+    int count = 0;
+
+    buffer.clear();
+
+    cvNamedWindow(WINDOW_TITLE.c_str(), 0);
+    cvResizeWindow(WINDOW_TITLE.c_str(), 320, 240);
+
+    while (exit_flag == false) {
+        ErrorCode code = av.readNextFrame();
+
+        if (code == ErrorCode::NOTING) {
+            frame = av.get_scaled_frame();
+            linesize = frame->linesize[0];
+
+            IplImage * image = createRgb24IplImage(frame->data[0], width, height, linesize);
+            SharedImage shared_image = SharedImage(image, [](IplImage * image){ cvReleaseImage(&image); });
+
+            std::cout << "Read image #" << count << " (" << image->width << "x" << image->height << ")!\n";
+            ++count;
+
+            cvShowImage(WINDOW_TITLE.c_str(), shared_image.get());
+            if (cvWaitKey(10) >= 0) { // Any key.
+                break;
+            }
+        } else {
+            assert(code != ErrorCode::NOTING);
+
+            switch (code) {
+            case ErrorCode::ERROR_MISMATCH_STREAM_INDEX:
+            case ErrorCode::NO_FRAME:
+                break;
+
+            case ErrorCode::ERROR_OR_EOF:
+            default:
+                exit_flag = true;
+                break;
+            }
+        }
+    }
+
+    av.close();
+    cvDestroyWindow(WINDOW_TITLE.c_str());
+    return 0;
+}
+
