@@ -18,6 +18,8 @@ extern "C" {
 #include <opencv/cv.h>
 #include <opencv/highgui.h>
 
+#include "SharedQueue.hpp"
+
 #define _RGB_CHANNEL_SIZE  3
 #define _GRAY_CHANNEL_SIZE 1
 
