@@ -3,9 +3,10 @@
 #include <vector>
 #include <string>
 #include <memory>
-#include <atomic>
 #include <mutex>
+#include <atomic>
 #include <thread>
+#include <chrono>
 
 extern "C" {
 #include <libavcodec/avcodec.h>
@@ -193,12 +194,18 @@ public:
     void close();
 
 public:
-    using FramePacket = std::shared_ptr<AVPacket>;
-private:
-    FramePacket _packet;
-public:
     ErrorCode readNextFrame(int const & stream_index);
     ErrorCode readNextFrame();
+
+private:
+    SharedQueue<AVPacket> _packet_queue;
+    std::thread _input_thread;
+    std::atomic_bool _exit;
+
+public:
+    void readPacket();
+    void startPacketReader();
+    void stopPacketReader();
 };
 
 // ---------------
@@ -210,7 +217,8 @@ int const AvDecoder::NOT_FOUND_VIDEO_STREAM_INDEX = -1;
 AvDecoder::AvDecoder()
         : _stream_index(NOT_FOUND_VIDEO_STREAM_INDEX), _ready(false)
         , _format_context(nullptr), _codec_context(nullptr), _scaler(nullptr)
-        , _original_frame(nullptr), _scaled_frame(nullptr), _packet(nullptr)
+        , _original_frame(nullptr), _scaled_frame(nullptr)
+        , _exit(false)
 {
     static std::once_flag register_flag;
     std::call_once(register_flag, [](){
@@ -229,6 +237,7 @@ AvDecoder::AvDecoder()
 
 AvDecoder::~AvDecoder()
 {
+    this->stopPacketReader();
     this->close();
 }
 
@@ -410,23 +419,23 @@ void AvDecoder::close()
 
 AvDecoder::ErrorCode AvDecoder::readNextFrame(int const & stream_index)
 {
-    _packet.reset(new (std::nothrow) AVPacket(), [](AVPacket * packet){
-                av_free_packet(packet);
-            });
-    // av_init_packet(packet);
-
-    //std::cout << "av_read_frame()\n";
-    if (av_read_frame(_format_context, _packet.get()) < 0) {
+    if (_exit == true) {
         return ErrorCode::ERROR_OR_EOF;
     }
 
+    using Packet = SharedQueue<AVPacket>::SharedType;
+    Packet current = _packet_queue.front(true);
+    if (static_cast<bool>(current) == false) {
+        return ErrorCode::NO_FRAME;
+    }
+
     // Assert!
-    if (stream_index != _packet->stream_index) {
+    if (stream_index != current->stream_index) {
         return ErrorCode::ERROR_MISMATCH_STREAM_INDEX;
     }
 
     int got_picture_ptr = 0;
-    avcodec_decode_video2(_codec_context, _original_frame, &got_picture_ptr, _packet.get());
+    avcodec_decode_video2(_codec_context, _original_frame, &got_picture_ptr, current.get());
     if (got_picture_ptr == 0) {
         return ErrorCode::NO_FRAME;
     }
@@ -442,6 +451,40 @@ AvDecoder::ErrorCode AvDecoder::readNextFrame(int const & stream_index)
 AvDecoder::ErrorCode AvDecoder::readNextFrame()
 {
     return readNextFrame(_stream_index);
+}
+
+void AvDecoder::readPacket()
+{
+    while (_exit == false) {
+        using Packet = SharedQueue<AVPacket>::SharedType;
+        Packet current(new (std::nothrow) AVPacket(), [](AVPacket * packet){
+            av_free_packet(packet);
+        });
+
+        if (av_read_frame(_format_context, current.get()) < 0) {
+            _exit = true;
+            break;
+        }
+
+        _packet_queue.push(current);
+
+        std::this_thread::sleep_for(std::chrono::milliseconds(1));
+    }
+}
+
+void AvDecoder::startPacketReader()
+{
+    _exit = false;
+    _input_thread = std::thread(&AvDecoder::readPacket, this);
+}
+
+void AvDecoder::stopPacketReader()
+{
+    _exit = true;
+
+    if (_input_thread.joinable()) {
+        _input_thread.join();
+    }
 }
 
 int main(int argc, char ** argv)
@@ -481,6 +524,8 @@ int main(int argc, char ** argv)
     cvNamedWindow(WINDOW_TITLE.c_str(), 0);
     cvResizeWindow(WINDOW_TITLE.c_str(), 320, 240);
 
+    av.startPacketReader();
+
     while (exit_flag == false) {
         //std::cout << "Read next frame.\n";
         ErrorCode code = av.readNextFrame();
@@ -515,11 +560,13 @@ int main(int argc, char ** argv)
             case ErrorCode::ERROR_OR_EOF:
                 message = "Error or eof.";
                 exit_flag = true;
+                av.stopPacketReader();
                 break;
 
             default:
                 message = "Unknown code.";
                 exit_flag = true;
+                av.stopPacketReader();
                 break;
             }
 
@@ -527,6 +574,7 @@ int main(int argc, char ** argv)
         }
     }
 
+    av.stopPacketReader();
     av.close();
     cvDestroyWindow(WINDOW_TITLE.c_str());
     return 0;

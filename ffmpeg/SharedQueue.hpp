@@ -76,13 +76,20 @@ public:
     }
 
 public:
-    SharedType front()
+    SharedType front(bool pop = false)
     {
         LockGuard guard(_locker);
         if (_queue.empty()) {
             return SharedType();
         }
-        return _queue.front();
+
+        SharedType result = _queue.front();
+
+        if (pop) {
+            _queue.pop();
+        }
+
+        return result;
     }
 
     std::size_t size() const
