@@ -3,8 +3,8 @@
 CXX=g++
 TARGET=a.out
 OBJS=main.o
-CXXFLAGS=-Wall -std=c++11 -g
-LDFLAGS=-lopencv_core -lopencv_highgui -lavcodec -lavformat -lavutil -lavfilter -lavdevice -lswscale
+CXXFLAGS=-Wall -std=c++11
+LDFLAGS=-lopencv_core -lopencv_highgui -lopencv_imgproc -lavcodec -lavformat -lavutil -lavfilter -lavdevice -lswscale
 
 .PONEY=all clean
 

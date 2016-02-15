@@ -1,4 +1,6 @@
 
+#include <cassert>
+
 #include <iostream>
 #include <vector>
 #include <string>
@@ -20,6 +22,8 @@ extern "C" {
 #include <opencv/highgui.h>
 
 #include "SharedQueue.hpp"
+
+#define _FPS (1000 / 60)
 
 #define _RGB_CHANNEL_SIZE  3
 #define _GRAY_CHANNEL_SIZE 1
@@ -44,6 +48,33 @@ IplImage * createRgb24IplImage(uint8_t const * src, int width, int height, int l
 
     return image;
 }
+
+void copyRgb24IplImage(uint8_t const * src, int width, int height, int linesize, IplImage * dest)
+{
+    assert(src != nullptr);
+    assert(dest != nullptr);
+
+    if (linesize == dest->widthStep && width == dest->width && height == dest->height) {
+        memcpy(dest->imageData, src, linesize * height);
+        return;
+    }
+
+    uint8_t const * src_cursor = NULL;
+    uint8_t * dest_cursor = NULL;
+
+    for (int y = 0; y < height; y++) {
+        src_cursor = (src + y * linesize);
+        dest_cursor = (uint8_t *) (dest->imageData + y * dest->widthStep);
+
+        for (int x = 0; x < width; x++) {
+            // BGR24 Format Copy.
+            dest_cursor[3 * x + 2] = src_cursor[3 * x + 2]; // r
+            dest_cursor[3 * x + 1] = src_cursor[3 * x + 1]; // g
+            dest_cursor[3 * x + 0] = src_cursor[3 * x + 0]; // b
+        }
+    }
+}
+
 
 /**
  * A/V Decoder class prototype.
@@ -200,6 +231,7 @@ public:
 private:
     SharedQueue<AVPacket> _packet_queue;
     std::thread _input_thread;
+    std::thread _scale_thread;
     std::atomic_bool _exit;
 
 public:
@@ -425,6 +457,8 @@ AvDecoder::ErrorCode AvDecoder::readNextFrame(int const & stream_index)
 
     using Packet = SharedQueue<AVPacket>::SharedType;
     Packet current = _packet_queue.front(true);
+    //printf("Pop packet queue: %ld\n", _packet_queue.size());
+
     if (static_cast<bool>(current) == false) {
         return ErrorCode::NO_FRAME;
     }
@@ -435,7 +469,9 @@ AvDecoder::ErrorCode AvDecoder::readNextFrame(int const & stream_index)
     }
 
     int got_picture_ptr = 0;
+
     avcodec_decode_video2(_codec_context, _original_frame, &got_picture_ptr, current.get());
+
     if (got_picture_ptr == 0) {
         return ErrorCode::NO_FRAME;
     }
@@ -467,8 +503,9 @@ void AvDecoder::readPacket()
         }
 
         _packet_queue.push(current);
+        //printf("Push packet queue: %ld\n", _packet_queue.size());
 
-        std::this_thread::sleep_for(std::chrono::milliseconds(1));
+        // std::this_thread::sleep_for(std::chrono::milliseconds(1));
     }
 }
 
@@ -517,12 +554,22 @@ int main(int argc, char ** argv)
     // int depth = 3;
 
     bool exit_flag = false;
-    int count = 0;
 
     buffer.clear();
 
+    int const PREVIEW_WIDTH  = 320;
+    int const PREVIEW_HEIGHT = 240;
     cvNamedWindow(WINDOW_TITLE.c_str(), 0);
-    cvResizeWindow(WINDOW_TITLE.c_str(), 320, 240);
+    cvResizeWindow(WINDOW_TITLE.c_str(), PREVIEW_WIDTH, PREVIEW_HEIGHT);
+
+    SharedImage frame_image = SharedImage(cvCreateImage(cvSize(width, height), IPL_DEPTH_8U, _RGB_CHANNEL_SIZE)
+            , [](IplImage * image){
+        cvReleaseImage(&image);
+    });
+    SharedImage preview_image = SharedImage(cvCreateImage(cvSize(PREVIEW_WIDTH, PREVIEW_HEIGHT), IPL_DEPTH_8U, _RGB_CHANNEL_SIZE)
+            , [](IplImage * image){
+        cvReleaseImage(&image);
+    });
 
     av.startPacketReader();
 
@@ -534,15 +581,14 @@ int main(int argc, char ** argv)
             frame = av.get_scaled_frame();
             linesize = frame->linesize[0];
 
-            IplImage * image = createRgb24IplImage(frame->data[0], width, height, linesize);
-            SharedImage shared_image = SharedImage(image, [](IplImage * image){ cvReleaseImage(&image); });
+            copyRgb24IplImage(frame->data[0], width, height, linesize, frame_image.get());
 
             //std::cout << "Read image #" << count << " (" << image->width << "x" << image->height << ")!\n";
-            ++count;
 
-            cvShowImage(WINDOW_TITLE.c_str(), shared_image.get());
-            if (cvWaitKey(1) >= 0) { // Any key.
-                break;
+            cvResize(frame_image.get(), preview_image.get());
+            cvShowImage(WINDOW_TITLE.c_str(), preview_image.get());
+            if (cvWaitKey(_FPS) >= 0) { // Any key.
+                exit_flag = true;
             }
         } else {
             assert(code != ErrorCode::NOTING);
