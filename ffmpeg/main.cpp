@@ -21,48 +21,6 @@ extern "C" {
 #define _RGB_CHANNEL_SIZE  3
 #define _GRAY_CHANNEL_SIZE 1
 
-std::shared_ptr<IplImage> createSharedImage(int width, int height, int depth, int channels)
-{
-    assert(width > 0);
-    assert(height > 0);
-    assert(depth == IPL_DEPTH_8U);
-    assert(channels == 1 || channels == 3 );
-
-    return std::shared_ptr<IplImage>(cvCreateImage(cvSize(width, height), depth, channels)
-            , [](IplImage * image) {
-        cvReleaseImage(&image);
-    });
-}
-
-IplImage * createRgb24IplImage(AVFrame const * frame)
-{
-    int width = frame->width;
-    int height = frame->height;
-
-    AVPixelFormat src_format = static_cast<AVPixelFormat>(frame->format);
-    AVPixelFormat dest_format = AV_PIX_FMT_BGR24;
-
-    int flags = SWS_BILINEAR;
-    SwsFilter * src_filter = nullptr;
-    SwsFilter * dest_filter = nullptr;
-    double const * param = nullptr;
-
-    struct SwsContext * scaler = sws_getContext(width, height, src_format
-            , width, height, dest_format, flags, src_filter, dest_filter, param);
-
-    if (scaler == nullptr) {
-        return nullptr;
-    }
-
-    IplImage * image = cvCreateImage(cvSize(width, height), IPL_DEPTH_8U, _RGB_CHANNEL_SIZE);
-    int linesize[4] = { image->widthStep, 0, 0, 0 };
-
-    sws_scale(scaler, frame->data, frame->linesize, 0, frame->height
-            , (uint8_t **) & (image->imageData), linesize);
-
-    return image;
-}
-
 IplImage * createRgb24IplImage(uint8_t const * src, int width, int height, int linesize)
 {
     uint8_t const * src_cursor = NULL;
@@ -84,24 +42,9 @@ IplImage * createRgb24IplImage(uint8_t const * src, int width, int height, int l
     return image;
 }
 
-IplImage * createGrayIplImage(uint8_t const * src, int width, int height, int linesize)
-{
-    uint8_t const * src_cursor = NULL;
-    uint8_t * dest_cursor = NULL;
-
-    IplImage * image = cvCreateImage(cvSize(width, height), IPL_DEPTH_8U, _GRAY_CHANNEL_SIZE);
-    for (int y = 0; y < height; y++) {
-        src_cursor = (src + y * linesize);
-        dest_cursor = (uint8_t *) (image->imageData + y * image->widthStep);
-
-        for (int x = 0; x < width; x++) {
-            dest_cursor[3 * x] = src_cursor[3 * x];
-        }
-    }
-
-    return image;
-}
-
+/**
+ * A/V Decoder class prototype.
+ */
 class AvDecoder
 {
 public:
@@ -140,67 +83,101 @@ public:
     ~AvDecoder();
 
 public:
-    inline void set_stream_index(std::size_t const & index)
-    {
-        _stream_index = index;
-    }
-    inline std::size_t get_stream_index() const
-    {
-        return _stream_index;
-    }
-    inline bool isReady() const
-    {
-        return _ready;
-    }
-    inline AVFrame * get_original_frame() const
-    {
-        return _original_frame;
-    }
-    inline AVFrame * get_scaled_frame() const
-    {
-        return _scaled_frame;
-    }
-    inline int get_output_width() const
-    {
-        return _output_width;
-    }
-    inline int get_output_height() const
-    {
-        return _output_height;
-    }
-    inline int get_output_format() const
-    {
-        return _output_format;
-    }
+    void set_stream_index(std::size_t const & index)
+    {   _stream_index = index;  }
+    std::size_t get_stream_index() const
+    {   return _stream_index;   }
+    bool isReady() const
+    {   return _ready;          }
+    AVFrame * get_original_frame() const
+    {   return _original_frame; }
+    AVFrame * get_scaled_frame() const
+    {   return _scaled_frame;   }
+    int get_output_width() const
+    {   return _output_width;   }
+    int get_output_height() const
+    {   return _output_height;  }
+    int get_output_format() const
+    {   return _output_format;  }
 
 // Buffer operators.
 private:
     std::size_t _buffer_size;
     uint8_t * _buffer;
+
 private:
     bool initBuffer(std::size_t const & size);
     void releaseBuffer();
 
 // stream methods.
 public:
-    std::size_t get_stream_count() const;
-    AVStream * get_stream(std::size_t const & index) const;
-public:
-    std::vector<int> getIndexList(int const & av_media_type);
-    std::vector<int> getVideoIndexList();
-    std::vector<int> getAudioIndexList();
-    std::vector<int> getSubtitleIndexList();
-public:
-    double getFrameRate(int const & stream_index);
-    int64_t getFrameStartTime(int const & stream_index);
-    int64_t getFrameDuration(int const & stream_index);
-    int64_t getFrameCount(int const & stream_index);
+    std::size_t get_stream_count() const
+    {
+        if (_format_context != nullptr) {
+            return _format_context->nb_streams;
+        }
+        return 0;
+    }
 
-    double getFrameRate();
-    int64_t getFrameStartTime();
-    int64_t getFrameDuration();
-    int64_t getFrameCount();
-    int64_t getGeneralDuration();
+    AVStream * get_stream(std::size_t const & index) const
+    {
+        if (_format_context != nullptr || index >= _format_context->nb_streams) {
+            return _format_context->streams[index];
+        }
+        return nullptr;
+    }
+
+public:
+    std::vector<int> getIndexList(int const & av_media_type)
+    {
+        std::vector<int> result;
+        if (_format_context == nullptr) {
+            return result;
+        }
+
+        std::size_t const kStreamCount = get_stream_count();
+        for (std::size_t cursor = 0; cursor < kStreamCount; ++cursor) {
+            AVStream * stream = get_stream(cursor);
+
+            if (stream != nullptr && stream->codec->codec_type == av_media_type) {
+                result.push_back(cursor);
+            }
+        }
+        return std::move(result);
+    }
+
+    std::vector<int> getVideoIndexList()
+    { return getIndexList(AVMEDIA_TYPE_VIDEO); }
+    std::vector<int> getAudioIndexList()
+    { return getIndexList(AVMEDIA_TYPE_AUDIO); }
+    std::vector<int> getSubtitleIndexList()
+    { return getIndexList(AVMEDIA_TYPE_SUBTITLE); }
+
+public:
+    double getFrameRate(int const & stream_index)
+    {
+        AVRational frame_rate = _format_context->streams[stream_index]->r_frame_rate;
+        return static_cast<double>(frame_rate.num) / static_cast<double>(frame_rate.den);
+    }
+
+    int64_t getFrameStartTime(int const & stream_index)
+    {   return _format_context->streams[stream_index]->start_time;  }
+    int64_t getFrameDuration(int const & stream_index)
+    {   return _format_context->streams[stream_index]->duration;    }
+    int64_t getFrameCount(int const & stream_index)
+    {   return _format_context->streams[stream_index]->nb_frames;   }
+
+public:
+    double getFrameRate()
+    {   return getFrameRate(_stream_index);         }
+    int64_t getFrameStartTime()
+    {   return getFrameStartTime(_stream_index);    }
+    int64_t getFrameDuration()
+    {   return getFrameDuration(_stream_index);     }
+    int64_t getFrameCount()
+    {   return getFrameCount(_stream_index);        }
+    int64_t getGeneralDuration()
+    {   return _format_context->duration;           }
 
 // Scaler methods.
 private:
@@ -228,7 +205,6 @@ public:
 
 int const AvDecoder::NOT_FOUND_VIDEO_STREAM_INDEX = -1;
 
-
 AvDecoder::AvDecoder()
         : _stream_index(NOT_FOUND_VIDEO_STREAM_INDEX), _ready(false)
         , _format_context(nullptr), _codec_context(nullptr), _scaler(nullptr)
@@ -251,7 +227,7 @@ AvDecoder::AvDecoder()
 
 AvDecoder::~AvDecoder()
 {
-    close();
+    this->close();
 }
 
 // ----------------
@@ -279,107 +255,12 @@ void AvDecoder::releaseBuffer()
 }
 
 // ---------------
-// stream methods.
-// ---------------
-
-std::size_t AvDecoder::get_stream_count() const
-{
-    if (_format_context != nullptr) {
-        return _format_context->nb_streams;
-    }
-    return 0;
-}
-
-AVStream * AvDecoder::get_stream(std::size_t const & index) const
-{
-    if (_format_context != nullptr || index >= _format_context->nb_streams) {
-        return _format_context->streams[index];
-    }
-    return nullptr;
-}
-
-std::vector<int> AvDecoder::getIndexList(int const & av_media_type)
-{
-    std::vector<int> result;
-    if (_format_context == nullptr) {
-        return result;
-    }
-
-    std::size_t const kStreamCount = get_stream_count();
-    for (std::size_t cursor = 0; cursor < kStreamCount; ++cursor) {
-        AVStream * stream = get_stream(cursor);
-
-        if (stream != nullptr && stream->codec->codec_type == av_media_type) {
-            result.push_back(cursor);
-        }
-    }
-    return std::move(result);
-}
-
-std::vector<int> AvDecoder::getVideoIndexList()
-{
-    return std::move(getIndexList(AVMEDIA_TYPE_VIDEO));
-}
-
-std::vector<int> AvDecoder::getAudioIndexList()
-{
-    return std::move(getIndexList(AVMEDIA_TYPE_AUDIO));
-}
-
-std::vector<int> AvDecoder::getSubtitleIndexList()
-{
-    return std::move(getIndexList(AVMEDIA_TYPE_SUBTITLE));
-}
-
-double AvDecoder::getFrameRate(int const & stream_index)
-{
-    AVRational frame_rate = _format_context->streams[stream_index]->r_frame_rate;
-    return static_cast<double>(frame_rate.num) / static_cast<double>(frame_rate.den);
-}
-
-int64_t AvDecoder::getFrameStartTime(int const & stream_index)
-{
-    return _format_context->streams[stream_index]->start_time;
-}
-
-int64_t AvDecoder::getFrameDuration(int const & stream_index)
-{
-    return _format_context->streams[stream_index]->duration;
-}
-
-int64_t AvDecoder::getFrameCount(int const & stream_index)
-{
-    return _format_context->streams[stream_index]->nb_frames;
-}
-
-double AvDecoder::getFrameRate()
-{
-    return getFrameRate(_stream_index);
-}
-int64_t AvDecoder::getFrameStartTime()
-{
-    return getFrameStartTime(_stream_index);
-}
-int64_t AvDecoder::getFrameDuration()
-{
-    return getFrameDuration(_stream_index);
-}
-int64_t AvDecoder::getFrameCount()
-{
-    return getFrameCount(_stream_index);
-}
-int64_t AvDecoder::getGeneralDuration()
-{
-    return _format_context->duration;
-}
-
-// ---------------
 // Scaler methods.
 // ---------------
 
 void AvDecoder::set_output_info(int const & width, int const & height, int const & format)
 {
-    _output_width = width;
+    _output_width  = width;
     _output_height = height;
     _output_format = format;
 }
@@ -436,7 +317,7 @@ bool AvDecoder::initScaler(int const & width, int const & height, int const & fo
 
     releaseBuffer();
     int picture_size = avpicture_get_size(destination_format, _output_width, _output_height);
-    if (initBuffer(picture_size) == true) {
+    if (initBuffer(picture_size * 2) == true) {
         picture_size = avpicture_fill((AVPicture*)_scaled_frame, _buffer,
                 destination_format, _output_width, _output_height);
     }
@@ -474,9 +355,12 @@ bool AvDecoder::open(const char * path)
     _ready = false;
     _stream_index = NOT_FOUND_VIDEO_STREAM_INDEX;
 
-    if (avformat_open_input(&_format_context, path, nullptr, nullptr) != 0) {
+    AVDictionary * options = nullptr;
+    //av_dict_set(&options, "rtsp_transport", "tcp", 0);
+    if (avformat_open_input(&_format_context, path, nullptr, &options) != 0) {
         return false;
     }
+    //av_dict_free(&options);
 
     // Retrieve stream information.
     if (avformat_find_stream_info(_format_context, nullptr) < 0) {
@@ -529,17 +413,18 @@ AvDecoder::ErrorCode AvDecoder::readNextFrame(int const & stream_index)
             });
     // av_init_packet(packet);
 
+    //std::cout << "av_read_frame()\n";
     if (av_read_frame(_format_context, _packet.get()) < 0) {
         return ErrorCode::ERROR_OR_EOF;
     }
 
+    // Assert!
     if (stream_index != _packet->stream_index) {
         return ErrorCode::ERROR_MISMATCH_STREAM_INDEX;
     }
 
     int got_picture_ptr = 0;
     avcodec_decode_video2(_codec_context, _original_frame, &got_picture_ptr, _packet.get());
-
     if (got_picture_ptr == 0) {
         return ErrorCode::NO_FRAME;
     }
@@ -595,6 +480,7 @@ int main(int argc, char ** argv)
     cvResizeWindow(WINDOW_TITLE.c_str(), 320, 240);
 
     while (exit_flag == false) {
+        //std::cout << "Read next frame.\n";
         ErrorCode code = av.readNextFrame();
 
         if (code == ErrorCode::NOTING) {
@@ -604,26 +490,38 @@ int main(int argc, char ** argv)
             IplImage * image = createRgb24IplImage(frame->data[0], width, height, linesize);
             SharedImage shared_image = SharedImage(image, [](IplImage * image){ cvReleaseImage(&image); });
 
-            std::cout << "Read image #" << count << " (" << image->width << "x" << image->height << ")!\n";
+            //std::cout << "Read image #" << count << " (" << image->width << "x" << image->height << ")!\n";
             ++count;
 
             cvShowImage(WINDOW_TITLE.c_str(), shared_image.get());
-            if (cvWaitKey(10) >= 0) { // Any key.
+            if (cvWaitKey(1) >= 0) { // Any key.
                 break;
             }
         } else {
             assert(code != ErrorCode::NOTING);
 
+            std::string message;
             switch (code) {
             case ErrorCode::ERROR_MISMATCH_STREAM_INDEX:
+                message = "Error mismatch stream index.";
+                break;
+
             case ErrorCode::NO_FRAME:
+                message = "No frame.";
                 break;
 
             case ErrorCode::ERROR_OR_EOF:
+                message = "Error or eof.";
+                exit_flag = true;
+                break;
+
             default:
+                message = "Unknown code.";
                 exit_flag = true;
                 break;
             }
+
+            std::cout << message << std::endl;
         }
     }
 
