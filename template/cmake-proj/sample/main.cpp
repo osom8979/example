@@ -6,10 +6,11 @@
  */
 
 #include <iostream>
+#include <__test__.h>
 
 int main(int argc, char ** argv)
 {
-    std::cout << "Hello, world!\n";
+    std::cout << __test__();
     return 0;
 }
 

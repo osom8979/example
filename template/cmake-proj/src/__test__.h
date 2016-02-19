@@ -5,8 +5,8 @@
  * @date   2016-02-19
  */
 
-#ifndef __INCLUDE_LIB___TEST___H__
-#define __INCLUDE_LIB___TEST___H__
+#ifndef __INCLUDE_LIB____TEST___H__
+#define __INCLUDE_LIB____TEST___H__
 
 #if defined(_MSC_VER)
 # if defined(EXPORT)
@@ -28,5 +28,5 @@ __LIB_EXPORT__ char const * const __test__();
 }
 #endif
 
-#endif // __INCLUDE_LIB___TEST___H__
+#endif // __INCLUDE_LIB____TEST___H__
 
