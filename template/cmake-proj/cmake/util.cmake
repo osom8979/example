@@ -17,3 +17,11 @@ function (echo_os)
     endif ()
 endfunction ()
 
+# Compiler & IDE:
+# MINGW MSYS CYGWIN BORLAND WATCOM MSVC MSVC_IDE MSVC60 MSVC70 MSVC71 MSVC80 CMAKE_COMPILER_2005 MSVC90 MSVC10
+
+## Echo your compiler.
+function (echo_compiler_id)
+    message ("Compiler id: ${CMAKE_CXX_COMPILER_ID}")
+endfunction ()
+
