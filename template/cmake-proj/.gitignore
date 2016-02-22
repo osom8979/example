@@ -152,4 +152,5 @@ cscope.out
 ###############
 ### PROJECT ###
 /src/**/config.h
+/build
 
