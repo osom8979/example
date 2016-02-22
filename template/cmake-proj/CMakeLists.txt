@@ -1,14 +1,8 @@
 cmake_minimum_required (VERSION 2.8.8)
 
-if (UNIX)
-    message ("Unix-like OS's.") # including Apple OS X and CygWin.
-endif ()
-if (WIN32)
-    message ("Windows OS.") # Prior to 2.8.4 this included CygWin.
-endif ()
-if (APPLE)
-    message ("Apple systems.")
-endif ()
+include (cmake/util.cmake)
+
+echo_os ()
 
 # Compiler & IDE:
 # MINGW MSYS CYGWIN BORLAND WATCOM MSVC MSVC_IDE MSVC60 MSVC70 MSVC71 MSVC80 CMAKE_COMPILER_2005 MSVC90 MSVC10
@@ -16,11 +10,14 @@ endif ()
 # ${PROJECT_SOURCE_DIR}: cmake built-in: source directory.
 # ${PROJECT_BINARY_DIR}: cmake built-in: build directory.
 
+set (CMAKE_VERBOSE_MAKEFILE  ON)
+set (CMAKE_MACOSX_RPATH       1) # CMP0042
+
 set (MAIN_NAME "main")
 set (MAIN_NAME_STATIC ${MAIN_NAME}_static)
 set (MAIN_NAME_SHARED ${MAIN_NAME})
 
-project (${MAIN_NAME})
+project (${MAIN_NAME} C CXX)
 
 set (${MAIN_NAME}_VERSION_MAJOR 0)
 set (${MAIN_NAME}_VERSION_MINOR 0)
@@ -46,9 +43,6 @@ target_link_libraries (${MAIN_NAME_SHARED} ${MAIN_LINK})
 
 include_directories (3rd)
 include_directories (src)
-
-set  (CMAKE_VERBOSE_MAKEFILE  ON)
-#set (CMAKE_MACOSX_RPATH      1)
 
 add_subdirectory (sample)
 add_subdirectory (test)
