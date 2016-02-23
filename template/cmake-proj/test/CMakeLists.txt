@@ -1,20 +1,14 @@
-## CMake test  build script.
+## CMake test build script.
 
 if (MAIN_NAME STREQUAL "")
     message (FATAL_ERROR "Not found MAIN_NAME variable.")
 endif()
 
-## ---------------------------
-## Enter the name of the test.
-set (TEST_NAME "tester")
-## ---------------------------
+## --------------------------------------------------------------
+set (TEST_NAME "tester" CACHE STRING "Test library name string.")
+## --------------------------------------------------------------
 
-project (${TEST_NAME} C CXX)
-
-set (${TEST_NAME}_VERSION_MAJOR  ${MAIN_NAME}_VERSION_MAJOR)
-set (${TEST_NAME}_VERSION_MINOR  ${MAIN_NAME}_VERSION_MINOR)
-set (${TEST_NAME}_VERSION_PATCH  ${MAIN_NAME}_VERSION_PATCH)
-set (${TEST_NAME}_VERSION_TWEAK  ${MAIN_NAME}_VERSION_TWEAK)
+project (${TEST_NAME})
 
 set (TEST_SRC_DIR     ".")
 set (TEST_SRC_SUFFIX  "*.cpp")

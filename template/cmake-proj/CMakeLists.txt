@@ -21,18 +21,6 @@ include (cmake/util.cmake)
 ## ${PROJECT_SOURCE_DIR}: cmake built-in: source directory.
 ## ${PROJECT_BINARY_DIR}: cmake built-in: build directory.
 
-## ------------------------------
-## Enter the name of the library.
-set (MAIN_NAME "main")
-## ------------------------------
-
-project (${MAIN_NAME} C CXX)
-
-set (${MAIN_NAME}_VERSION_MAJOR  0)
-set (${MAIN_NAME}_VERSION_MINOR  0)
-set (${MAIN_NAME}_VERSION_PATCH  0)
-set (${MAIN_NAME}_VERSION_TWEAK  0)
-
 configure_file (
     "${PROJECT_SOURCE_DIR}/template/config.h.in"
     "${PROJECT_SOURCE_DIR}/src/${MAIN_NAME}/config.h"
@@ -41,10 +29,9 @@ configure_file (
 include_directories (third)
 include_directories (src)
 
-add_library (${MAIN_NAME} ${PROJECT_SOURCE_DIR}/src/__test__.cpp)
-
 ## Excutable
-#add_subdirectory (third)
+add_subdirectory (third)
+add_subdirectory (src)
 add_subdirectory (sample)
 add_subdirectory (test)
 
