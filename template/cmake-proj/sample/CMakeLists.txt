@@ -1,8 +1,6 @@
 ## CMake sample build script.
 
-if (SAMPLE_NAME STREQUAL "")
-    message (FATAL_ERROR "Not defined SAMPLE_NAME variable.")
-endif()
+exists_define (SAMPLE_NAME)
 
 project (${SAMPLE_NAME})
 

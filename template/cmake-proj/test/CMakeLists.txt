@@ -1,8 +1,6 @@
 ## CMake test build script.
 
-if (TEST_NAME STREQUAL "")
-    message (FATAL_ERROR "Not defined TEST_NAME variable.")
-endif()
+exists_define (TEST_NAME)
 
 project (${TEST_NAME})
 

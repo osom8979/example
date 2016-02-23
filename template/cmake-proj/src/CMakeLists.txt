@@ -1,8 +1,6 @@
 ## CMake main build script.
 
-if (MAIN_NAME STREQUAL "")
-    message (FATAL_ERROR "Not defined MAIN_NAME variable.")
-endif()
+exists_define (MAIN_NAME)
 
 project (${MAIN_NAME})
 

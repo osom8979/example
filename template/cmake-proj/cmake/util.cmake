@@ -25,3 +25,10 @@ function (print_compiler_id)
     message ("Compiler id: ${CMAKE_CXX_COMPILER_ID}")
 endfunction ()
 
+## Exists defined value.
+function (exists_define value)
+    if (NOT DEFINED ${value} OR ${value} STREQUAL "")
+        message (FATAL_ERROR "Not defined ${value} variable.")
+    endif()
+endfunction ()
+
