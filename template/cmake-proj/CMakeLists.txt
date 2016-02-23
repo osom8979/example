@@ -15,8 +15,8 @@ include (cmake/util.cmake)
 #set (CMAKE_BUILD_TYPE "Debug")
 #set (CMAKE_BUILD_TYPE "Release")
 
-#echo_os ()
-#echo_compiler_id ()
+#print_os ()
+#print_compiler_id ()
 
 ## ${PROJECT_SOURCE_DIR}: cmake built-in: source directory.
 ## ${PROJECT_BINARY_DIR}: cmake built-in: build directory.
@@ -44,6 +44,7 @@ include_directories (src)
 add_library (${MAIN_NAME} ${PROJECT_SOURCE_DIR}/src/__test__.cpp)
 
 ## Excutable
+#add_subdirectory (third)
 add_subdirectory (sample)
 add_subdirectory (test)
 
