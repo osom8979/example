@@ -1,15 +1,15 @@
 ## CMake main build script.
 
-## ------------------------------------------------------------
-set (MAIN_NAME "main" CACHE STRING "Main library name string.")
-## ------------------------------------------------------------
+if (MAIN_NAME STREQUAL "")
+    message (FATAL_ERROR "Not defined MAIN_NAME variable.")
+endif()
 
 project (${MAIN_NAME})
 
-set (${MAIN_NAME}_VERSION_MAJOR  0)
-set (${MAIN_NAME}_VERSION_MINOR  0)
-set (${MAIN_NAME}_VERSION_PATCH  0)
-set (${MAIN_NAME}_VERSION_TWEAK  0)
+set (${MAIN_NAME}_VERSION_MAJOR  ${VERSION_MAJOR})
+set (${MAIN_NAME}_VERSION_MINOR  ${VERSION_MINOR})
+set (${MAIN_NAME}_VERSION_PATCH  ${VERSION_PATCH})
+set (${MAIN_NAME}_VERSION_TWEAK  ${VERSION_TWEAK})
 
 set (MAIN_SRC_DIR     ".")
 set (MAIN_SRC_SUFFIX  "*.cpp")

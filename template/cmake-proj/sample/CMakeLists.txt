@@ -1,12 +1,8 @@
 ## CMake sample build script.
 
-if (MAIN_NAME STREQUAL "")
-    message (FATAL_ERROR "Not found MAIN_NAME variable.")
+if (SAMPLE_NAME STREQUAL "")
+    message (FATAL_ERROR "Not defined SAMPLE_NAME variable.")
 endif()
-
-## ------------------------------------------------------------------
-set (SAMPLE_NAME "sample" CACHE STRING "Sample library name string.")
-## ------------------------------------------------------------------
 
 project (${SAMPLE_NAME})
 

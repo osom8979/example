@@ -1,12 +1,8 @@
 ## CMake test build script.
 
-if (MAIN_NAME STREQUAL "")
-    message (FATAL_ERROR "Not found MAIN_NAME variable.")
+if (TEST_NAME STREQUAL "")
+    message (FATAL_ERROR "Not defined TEST_NAME variable.")
 endif()
-
-## --------------------------------------------------------------
-set (TEST_NAME "tester" CACHE STRING "Test library name string.")
-## --------------------------------------------------------------
 
 project (${TEST_NAME})
 

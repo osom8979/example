@@ -1,4 +1,4 @@
-## CMake main build script.
+## CMake build script.
 
 cmake_minimum_required (VERSION 2.8.8)
 
@@ -20,6 +20,16 @@ include (cmake/util.cmake)
 
 ## ${PROJECT_SOURCE_DIR}: cmake built-in: source directory.
 ## ${PROJECT_BINARY_DIR}: cmake built-in: build directory.
+
+set (MAIN_NAME   "main"    CACHE STRING  "Main library name string.")
+set (THIRD_NAME  "third"   CACHE STRING  "Third-party library name string.")
+set (SAMPLE_NAME "sample"  CACHE STRING  "Sample library name string.")
+set (TEST_NAME   "tester"  CACHE STRING  "Test library name string.")
+
+set (VERSION_MAJOR  0)
+set (VERSION_MINOR  0)
+set (VERSION_PATCH  0)
+set (VERSION_TWEAK  0)
 
 configure_file (
     "${PROJECT_SOURCE_DIR}/template/config.h.in"
