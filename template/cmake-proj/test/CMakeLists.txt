@@ -1,6 +1,6 @@
 ## CMake test build script.
 
-exists_define (TEST_NAME)
+exists_define_or_die (TEST_NAME)
 
 project (${TEST_NAME})
 

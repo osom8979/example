@@ -1,6 +1,6 @@
 ## CMake sample build script.
 
-exists_define (SAMPLE_NAME)
+exists_define_or_die (SAMPLE_NAME)
 
 project (${SAMPLE_NAME})
 

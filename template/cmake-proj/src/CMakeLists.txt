@@ -1,6 +1,6 @@
 ## CMake main build script.
 
-exists_define (MAIN_NAME)
+exists_define_or_die (MAIN_NAME)
 
 project (${MAIN_NAME})
 

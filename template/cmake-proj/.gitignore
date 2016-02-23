@@ -151,6 +151,7 @@ cscope.out
 
 ###############
 ### PROJECT ###
+/src/**/prefix.h
 /src/**/config.h
 /build
 /Doxyfile
