@@ -17,6 +17,39 @@
 #error "Don't using UNICODE from the main project."
 #endif
 
+
+/**
+ * @defgroup __DOXYGEN_GROUP__PREFIX_INFORMATION__ Prefix information
+ * @brief Prefix information group.
+ * @{
+ */
+
+#include <${MAIN_NAME}/prefix.h>
+
+#ifndef TITLE_NAME
+#error "Not defined TITLE_NAME."
+#endif
+
+#ifndef VERSION_MAJOR
+#error "Not defined VERSION_MAJOR."
+#endif
+
+#ifndef VERSION_MINOR
+#error "Not defined VERSION_MINOR."
+#endif
+
+#ifndef VERSION_PATCH
+#error "Not defined VERSION_PATCH."
+#endif
+
+#ifndef VERSION_TWEAK
+#error "Not defined VERSION_TWEAK."
+#endif
+
+/**
+ * @}
+ */
+
 #define TO_STRING_IMP(m)  #m
 #define TO_STRING(x)      TO_STRING_IMP(x)
 #define LINE_STRING       TO_STRING(__LINE__)
@@ -28,20 +61,6 @@
 #define __LOCATION__  FILE_STRING  ":" LINE_STRING
 #define DEBUG_STAMP   __DATETIME__ " " __LOCATION__
 
-/**
- * @defgroup __DOXYGEN_GROUP__PROJECT_INFORMATION__ Project information
- * @brief Project information group.
- * @{
- */
-
-#define TITLE_NAME    "${MAIN_NAME}"
-#define TITLE_PREFIX  "[" TITLE_NAME "]"
-
-#define VERSION_MAJOR  ${VERSION_MAJOR}
-#define VERSION_MINOR  ${VERSION_MINOR}
-#define VERSION_PATCH  ${VERSION_PATCH}
-#define VERSION_TWEAK  ${VERSION_TWEAK}
-
 #define VERSION_SEPARATOR "."
 #define VERSION_STRING \
     TO_STRING(VERSION_MAJOR)  VERSION_SEPARATOR \
@@ -49,13 +68,11 @@
     TO_STRING(VERSION_PATCH)  VERSION_SEPARATOR \
     TO_STRING(VERSION_TWEAK)
 
+#define TITLE_PREFIX  "[" TITLE_NAME "]"
+
 /** Main Title. */
 #define MAIN_TITLE \
     TITLE_NAME " v" VERSION_STRING
-
-/**
- * @}
- */
 
 /** Unused parameter macro. */
 #ifndef UNUSED_PARAM
@@ -281,20 +298,21 @@
 
 #ifndef NAMESPACE_ANONYMOUS
 #define NAMESPACE_ANONYMOUS
-#define NAMESPACE_ANONYMOUS_OPEN  namespace {
-#define NAMESPACE_ANONYMOUS_CLOSE }
+#define NAMESPACE_ANONYMOUS_OPEN   namespace {
+#define NAMESPACE_ANONYMOUS_CLOSE  }
 #endif
 
 #ifndef NAMESPACE_MAIN
-#define NAMESPACE_MAIN       TITLE_NAME
-#define NAMESPACE_MAIN_OPEN  namespace NAMESPACE_MAIN {
-#define NAMESPACE_MAIN_CLOSE }
+#define NAMESPACE_MAIN        TITLE_NAME
+#define NAMESPACE_MAIN_OPEN   namespace NAMESPACE_MAIN {
+#define NAMESPACE_MAIN_CLOSE  }
+#define USING_NAMESPACE_MAIN  using namespace NAMESPACE_MAIN;
 #endif
 
 #if defined(__LANG_STDCPP__)
 NAMESPACE_MAIN_OPEN
 NAMESPACE_MAIN_CLOSE
-namespace main = NAMESPACE_MAIN;
+namespace m = NAMESPACE_MAIN;
 #endif // __LANG_STDCPP__
 
 #endif // __INCLUDE_MAIN__MAIN_CONFIG_H__
