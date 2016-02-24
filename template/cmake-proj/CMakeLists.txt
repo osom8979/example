@@ -8,6 +8,7 @@ enable_language (CXX)
 include (cmake/link.cmake)
 include (cmake/util.cmake)
 include (cmake/protobuf.cmake)
+include (cmake/zlib.cmake)
 
 # ---------------
 # CMake settings.
