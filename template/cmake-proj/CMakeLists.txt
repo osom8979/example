@@ -7,8 +7,12 @@ enable_language (CXX)
 
 include (cmake/link.cmake)
 include (cmake/util.cmake)
+include (cmake/protobuf.cmake)
 
-## CMake settings.
+# ---------------
+# CMake settings.
+# ---------------
+
  set (CMAKE_MACOSX_RPATH 1) # CMP0042
 #set (CMAKE_VERBOSE_MAKEFILE ON)
 #set (BUILD_SHARED_LIBS ON)
@@ -19,9 +23,6 @@ include (cmake/util.cmake)
 #print_os ()
 #print_compiler_id ()
 
-## ${PROJECT_SOURCE_DIR}: cmake built-in: source directory.
-## ${PROJECT_BINARY_DIR}: cmake built-in: build directory.
-
 set (MAIN_NAME   "main"    CACHE STRING  "Main library name string.")
 set (THIRD_NAME  "third"   CACHE STRING  "Third-party library name string.")
 set (SAMPLE_NAME "sample"  CACHE STRING  "Sample program name string.")
@@ -29,9 +30,10 @@ set (TEST_NAME   "tester"  CACHE STRING  "Test program name string.")
 
 set (BRIEF "CMake project template" CACHE STRING "Project brief.")
 
-set (USE_PROTOBUF  ON CACHE BOOL "Use the google-protocol-buffers.")
-set (USE_CUDA      ON CACHE BOOL "Use the nvidia-cuda.")
-set (USE_OBFUSCATE ON CACHE BOOL "Use the obfuscate.")
+set (USE_ZLIB      ON  CACHE BOOL "Use the zlib.")
+set (USE_PROTOBUF  ON  CACHE BOOL "Use the google-protocol-buffers.")
+set (USE_CUDA      OFF CACHE BOOL "Use the nvidia-cuda.")
+set (USE_OBFUSCATE OFF CACHE BOOL "Use the obfuscate.")
 
 set (VERSION_MAJOR  0)
 set (VERSION_MINOR  0)
@@ -42,6 +44,16 @@ set (VERSION "${VERSION_MAJOR}.${VERSION_MINOR}.${VERSION_PATCH}.${VERSION_TWEAK
 set (VERSION_PACKET_MAJOR  0)
 set (VERSION_PACKET_MINOR  0)
 set (VERSION_RELEASE       0)
+
+set (THIRD_PREFIX "${PROJECT_SOURCE_DIR}/third")
+set (THIRD_BIN    "${THIRD_PREFIX}/bin")
+set (THIRD_INC    "${THIRD_PREFIX}/include")
+set (THIRD_LIB    "${THIRD_PREFIX}/lib")
+set (BUILD_DIR    "${THIRD_PREFIX}/build")
+
+if (NOT EXISTS ${BUILD_DIR})
+    file (MAKE_DIRECTORY ${BUILD_DIR})
+endif ()
 
 # -------------------
 # Configure settings.
@@ -66,17 +78,17 @@ configure_file (${IN_DOXYFILE} ${OUT_DOXYFILE} NEWLINE_STYLE UNIX)
 # Properties.
 # -----------
 
-include_directories (third)
-include_directories (proto)
-include_directories (cuda)
 include_directories (src)
+include_directories (${THIRD_INC})
+
+link_directories (${THIRD_LIB})
 
 # ---------
 # Children.
 # ---------
 
-add_subdirectory (third)
 add_subdirectory (src)
+add_subdirectory (third)
 add_subdirectory (sample)
 add_subdirectory (test)
 

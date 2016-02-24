@@ -151,6 +151,11 @@ cscope.out
 
 ###############
 ### PROJECT ###
+/third/build
+/third/bin
+/third/include
+/third/lib
+/third/share
 /src/**/prefix.h
 /src/**/config.h
 /build
