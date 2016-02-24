@@ -2,45 +2,42 @@
 
 #! download & build & install, google protobuf library.
 #
-# \param working      [in] working directory.
-# \param prefix       [in] install prefix directory.
-# \param include_path [in] CPP, include path.
-# \param library_parh [in] LINK, library path.
-function (install_protobuf working prefix include_path library_path)
-    set (WORKING_DIR   "${working}")
-    set (PROTOBUF_DIR  "${WORKING_DIR}/protobuf")
-    set (PREFIX_DIR    "${prefix}")
-    set (INCLUDE_DIR   "${include_path}")
-    set (LIBRARY_DIR   "${library_path}")
+# \param _working      [in] working directory.
+# \param _prefix       [in] install prefix directory.
+# \param _include_path [in] CPP, include path.
+# \param _library_parh [in] LINK, library path.
+function (install_protobuf _working _prefix _include_path _library_path)
+
+    set (_proj_name    "protobuf")
+    set (_proj_url     "https://github.com/google/protobuf.git")
+    set (_parent_dir   "${_working}")
+    set (_build_dir    "${_parent_dir}/${_proj_name}")
+    set (_prefix_dir   "${_prefix}")
+    set (_include_dir  "${_include_path}")
+    set (_library_dir  "${_library_path}")
 
     # Download.
     execute_process (
-        COMMAND git clone --depth=1 https://github.com/google/protobuf.git
-        WORKING_DIRECTORY "${WORKING_DIR}"
+        COMMAND git clone --depth=1 ${_proj_url}
+        WORKING_DIRECTORY "${_parent_dir}"
     )
 
-    # Generate configure.
+    # Build & install.
     execute_process (
         COMMAND ./autogen.sh
-        WORKING_DIRECTORY "${PROTOBUF_DIR}"
+        WORKING_DIRECTORY "${_build_dir}"
     )
-
-    # Run configure.
     execute_process (
-        COMMAND ./configure --prefix=${PREFIX_DIR} CPPFLAGS=-I${INCLUDE_DIR} LDFLAGS=-L${LIBRARY_DIR}
-        WORKING_DIRECTORY "${PROTOBUF_DIR}"
+        COMMAND ./configure --prefix=${_prefix_dir} CPPFLAGS=-I${_include_dir} LDFLAGS=-L${_library_dir}
+        WORKING_DIRECTORY "${_build_dir}"
     )
-
-    # Build.
     execute_process (
         COMMAND make
-        WORKING_DIRECTORY "${PROTOBUF_DIR}"
+        WORKING_DIRECTORY "${_build_dir}"
     )
-
-    # Install
     execute_process (
         COMMAND make install
-        WORKING_DIRECTORY "${PROTOBUF_DIR}"
+        WORKING_DIRECTORY "${_build_dir}"
     )
 endfunction ()
 

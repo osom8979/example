@@ -35,22 +35,23 @@ endfunction ()
 #! Check the exists define.
 # If not exists, it send a fatal error.
 #
-# \param value [in] check value name.
-function (exists_define_or_die value)
-    if (NOT DEFINED ${value} OR ${value} STREQUAL "")
-        message (FATAL_ERROR "Not defined ${value} variable.")
+# \param _value [in] check value name.
+function (exists_define_or_die _value)
+    if (NOT DEFINED ${_value} OR ${_value} STREQUAL "")
+        message (FATAL_ERROR "Not defined ${_value} variable.")
     endif()
 endfunction ()
 
 #! Append list to list.
 #
-# \param value      [out] output value name.
-# \param list_value [in]  list value name.
-macro (append_list value list_value)
-    #message ("value: ${value} (${${value}}), list_value: ${list_value} (${${list_value}})")
+# \param _value      [out] output value name.
+# \param _list_value [in]  list value name.
+macro (append_list _value _list_value)
+    #message ("_value: ${_value} (${${_value}})")
+    #message ("_list_value: ${_list_value} (${${_list_value}})")
 
-    foreach (cursor ${${list_value}})
-        list (APPEND ${value} ${cursor})
+    foreach (cursor ${${_list_value}})
+        list (APPEND ${_value} ${cursor})
     endforeach ()
 endmacro () 
 

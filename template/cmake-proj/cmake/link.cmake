@@ -2,15 +2,15 @@
 
 #! Insert whole-archive flags.
 #
-# \param value [out] output list value name.
-macro (insert_whole_archive_flags value)
-    #message ("value: ${value} (${${value}})")
+# \param _value [out] output list value name.
+macro (insert_whole_archive_flags _value)
+    #message ("_value: ${_value} (${${_value}})")
 
     if ("${CMAKE_CXX_COMPILER_ID}" STREQUAL "Clang")
-        list (INSERT ${value} 0 "-Wl,-force_load")
+        list (INSERT ${_value} 0 "-Wl,-force_load")
     elseif ("${CMAKE_CXX_COMPILER_ID}" STREQUAL "GNU")
-        list (INSERT ${value} 0 "-Wl,--whole-archive")
-        list (APPEND ${value} "-Wl,--no-whole-archive")
+        list (INSERT ${_value} 0 "-Wl,--whole-archive")
+        list (APPEND ${_value} "-Wl,--no-whole-archive")
     endif ()
 endmacro ()
 

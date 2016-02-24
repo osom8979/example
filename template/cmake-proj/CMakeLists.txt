@@ -16,7 +16,7 @@ include (cmake/zlib.cmake)
 
  set (CMAKE_MACOSX_RPATH 1) # CMP0042
 #set (CMAKE_VERBOSE_MAKEFILE ON)
-#set (BUILD_SHARED_LIBS ON)
+ set (BUILD_SHARED_LIBS ON)
  set (CMAKE_CXX_FLAGS  "${CMAKE_CXX_FLAGS} -fPIC -Wall")
 #set (CMAKE_BUILD_TYPE "Debug")
 #set (CMAKE_BUILD_TYPE "Release")
