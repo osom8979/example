@@ -2,7 +2,7 @@
 
 #! Insert whole-archive flags.
 #
-# \param _value [out] output list value name.
+# \param _value [out] value name of output list.
 macro (insert_whole_archive_flags _value)
     #message ("_value: ${_value} (${${_value}})")
 
