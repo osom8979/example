@@ -6,6 +6,7 @@ enable_language (C)
 enable_language (CXX)
 
 include (cmake/link.cmake)
+include (cmake/module.cmake)
 include (cmake/util.cmake)
 include (cmake/protobuf.cmake)
 include (cmake/zlib.cmake)
@@ -33,7 +34,7 @@ set (BRIEF "CMake project template" CACHE STRING "Project brief.")
 
 set (USE_ZLIB      ON  CACHE BOOL "Use the zlib.")
 set (USE_PROTOBUF  ON  CACHE BOOL "Use the google-protocol-buffers.")
-set (USE_CUDA      OFF CACHE BOOL "Use the nvidia-cuda.")
+set (USE_CUDA      ON  CACHE BOOL "Use the nvidia-cuda.")
 set (USE_OBFUSCATE OFF CACHE BOOL "Use the obfuscate.")
 
 set (VERSION_MAJOR  0)
@@ -60,6 +61,17 @@ add_subdirectory (third)
 
 list (INSERT CMAKE_PROGRAM_PATH 0 "${THIRD_BIN}")
 list (INSERT CMAKE_LIBRARY_PATH 0 "${THIRD_LIB}")
+
+# -------
+# Module.
+# -------
+
+if (USE_PROTOBUF)
+    find_extension_and_assign_module ("src" "proto" "Protobuf")
+endif ()
+if (USE_CUDA)
+    find_extension_and_assign_module ("src" "cu" "CUDA")
+endif ()
 
 # -------------------
 # Configure settings.
