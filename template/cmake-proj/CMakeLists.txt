@@ -56,6 +56,11 @@ if (NOT EXISTS ${BUILD_DIR})
     file (MAKE_DIRECTORY ${BUILD_DIR})
 endif ()
 
+add_subdirectory (third)
+
+list (INSERT CMAKE_PROGRAM_PATH 0 "${THIRD_BIN}")
+list (INSERT CMAKE_LIBRARY_PATH 0 "${THIRD_LIB}")
+
 # -------------------
 # Configure settings.
 # -------------------
@@ -89,7 +94,6 @@ link_directories (${THIRD_LIB})
 # ---------
 
 add_subdirectory (src)
-add_subdirectory (third)
 add_subdirectory (sample)
 add_subdirectory (test)
 
