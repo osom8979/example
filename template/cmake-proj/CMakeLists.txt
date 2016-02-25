@@ -67,10 +67,10 @@ list (INSERT CMAKE_LIBRARY_PATH 0 "${THIRD_LIB}")
 # -------
 
 if (USE_PROTOBUF)
-    find_extension_and_assign_module ("src" "proto" "Protobuf")
+    find_extension_and_assign_module ("${PROJECT_SOURCE_DIR}/src" "proto" "Protobuf")
 endif ()
 if (USE_CUDA)
-    find_extension_and_assign_module ("src" "cu" "CUDA")
+    find_extension_and_assign_module ("${PROJECT_SOURCE_DIR}/src" "cu" "CUDA")
 endif ()
 
 # -------------------
