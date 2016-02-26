@@ -266,7 +266,7 @@ DOT_CLEANUP            = YES
 ## AUTO GENERATE CODE:
 PROJECT_NAME            = "${MAIN_NAME}"
 PROJECT_NUMBER          = "${VERSION}"
-PROJECT_BRIEF           = "${BRIEF}"
+PROJECT_BRIEF           = "${MAIN_BRIEF}"
 OUTPUT_LANGUAGE         = Korean-en
 ALIASES                 = translate{2}="<dl class='section remarks'><dt>Translate-\1</dt><dd>\2</dd></dl>"
 WARN_IF_UNDOCUMENTED    = NO

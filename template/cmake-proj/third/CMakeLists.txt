@@ -2,31 +2,41 @@
 
 exists_define_or_die (THIRD_PREFIX)
 
+set (_temp_prefix     "${THIRD_PREFIX}/temp")
+set (_binary_prefix   "${THIRD_PREFIX}/bin")
+set (_include_prefix  "${THIRD_PREFIX}/include")
+set (_library_prefix  "${THIRD_PREFIX}/lib")
+
+# Build directory.
+if (NOT EXISTS ${_temp_prefix})
+    file (MAKE_DIRECTORY ${_temp_prefix})
+endif ()
+
 if (USE_ZLIB)
     message ("** Use the zlib.")
 
-    set (ZLIB_LIB "${THIRD_PREFIX}/lib/libz.a")
+    set (_zlib_static_lib "${_library_prefix}/libz.a")
 
-    if (EXISTS ${ZLIB_LIB})
-        message ("** Exists zlib library: ${ZLIB_LIB}")
+    if (EXISTS ${_zlib_static_lib})
+        message ("** Exists zlib library: ${_zlib_static_lib}")
     else ()
         message ("** Install zlib library.")
-        install_zlib ("${BUILD_DIR}" "${THIRD_PREFIX}")
+        install_zlib ("${_temp_prefix}" "${THIRD_PREFIX}")
     endif ()
 endif ()
 
 if (USE_PROTOBUF)
     message ("** Use the google-protocol-buffers.")
 
-    set (PROTOBUF_LIB "${THIRD_PREFIX}/lib/libprotobuf.a")
-    set (PROTOBUF_EXE "${THIRD_PREFIX}/bin/protoc")
+    set (_protobuf_static_lib "${_library_prefix}/libprotobuf.a")
+    set (_protobuf_compiler   "${_binary_prefix}/protoc")
 
-    if (EXISTS ${PROTOBUF_LIB} AND EXISTS ${PROTOBUF_EXE})
-        message ("** Exists protobuf library: ${PROTOBUF_LIB}")
+    if (EXISTS ${_protobuf_static_lib} AND EXISTS ${_protobuf_compiler})
+        message ("** Exists protobuf library: ${_protobuf_static_lib}")
     else ()
         message ("** Install protobuf library.")
-        install_protobuf ("${BUILD_DIR}" "${THIRD_PREFIX}"
-            "${THIRD_PREFIX}/include" "${THIRD_PREFIX}/lib")
+        install_protobuf ("${_temp_prefix}" "${THIRD_PREFIX}"
+            "${_include_prefix}" "${_library_prefix}")
     endif ()
 endif ()
 
