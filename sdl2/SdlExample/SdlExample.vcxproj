@@ -1,0 +1,147 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Project DefaultTargets="Build" ToolsVersion="4.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <ItemGroup Label="ProjectConfigurations">
+    <ProjectConfiguration Include="Debug|Win32">
+      <Configuration>Debug</Configuration>
+      <Platform>Win32</Platform>
+    </ProjectConfiguration>
+    <ProjectConfiguration Include="Release|Win32">
+      <Configuration>Release</Configuration>
+      <Platform>Win32</Platform>
+    </ProjectConfiguration>
+  </ItemGroup>
+  <PropertyGroup Label="Globals">
+    <ProjectGuid>{9FB538EE-30DD-48D5-9716-796A4BB914A8}</ProjectGuid>
+    <Keyword>Win32Proj</Keyword>
+    <RootNamespace>SdlExample</RootNamespace>
+  </PropertyGroup>
+  <Import Project="$(VCTargetsPath)\Microsoft.Cpp.Default.props" />
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'" Label="Configuration">
+    <ConfigurationType>Application</ConfigurationType>
+    <UseDebugLibraries>true</UseDebugLibraries>
+    <CharacterSet>Unicode</CharacterSet>
+  </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|Win32'" Label="Configuration">
+    <ConfigurationType>Application</ConfigurationType>
+    <UseDebugLibraries>false</UseDebugLibraries>
+    <WholeProgramOptimization>true</WholeProgramOptimization>
+    <CharacterSet>Unicode</CharacterSet>
+  </PropertyGroup>
+  <Import Project="$(VCTargetsPath)\Microsoft.Cpp.props" />
+  <ImportGroup Label="ExtensionSettings">
+  </ImportGroup>
+  <ImportGroup Label="PropertySheets" Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">
+    <Import Project="$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props" Condition="exists('$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props')" Label="LocalAppDataPlatform" />
+  </ImportGroup>
+  <ImportGroup Label="PropertySheets" Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">
+    <Import Project="$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props" Condition="exists('$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props')" Label="LocalAppDataPlatform" />
+  </ImportGroup>
+  <PropertyGroup Label="UserMacros" />
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">
+    <LinkIncremental>true</LinkIncremental>
+    <IncludePath>$(IncludePath)</IncludePath>
+    <ReferencePath>$(ReferencePath)</ReferencePath>
+    <ExecutablePath>$(ExecutablePath)</ExecutablePath>
+  </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">
+    <LinkIncremental>false</LinkIncremental>
+    <IncludePath>$(IncludePath)</IncludePath>
+    <ReferencePath>$(ReferencePath)</ReferencePath>
+    <ExecutablePath>$(ExecutablePath)</ExecutablePath>
+  </PropertyGroup>
+  <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">
+    <ClCompile>
+      <PrecompiledHeader>
+      </PrecompiledHeader>
+      <WarningLevel>Level3</WarningLevel>
+      <Optimization>Disabled</Optimization>
+      <PreprocessorDefinitions>WIN32;_DEBUG;_CONSOLE;%(PreprocessorDefinitions)</PreprocessorDefinitions>
+      <AdditionalIncludeDirectories>$(ProjectDir)\SDL2\include;$(ProjectDir)\SDL2_image\include;$(ProjectDir)\SDL2_mixer\include;$(ProjectDir)\SDL2_ttf\include</AdditionalIncludeDirectories>
+    </ClCompile>
+    <Link>
+      <SubSystem>Console</SubSystem>
+      <GenerateDebugInformation>true</GenerateDebugInformation>
+      <AdditionalDependencies>%(AdditionalDependencies)</AdditionalDependencies>
+      <AdditionalLibraryDirectories>$(ProjectDir)\SDL2\lib\x86;$(ProjectDir)\SDL2_image\lib\x86;$(ProjectDir)\SDL2_mixer\lib\x86;$(ProjectDir)\SDL2_ttf\lib\x86</AdditionalLibraryDirectories>
+    </Link>
+  </ItemDefinitionGroup>
+  <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">
+    <ClCompile>
+      <WarningLevel>Level3</WarningLevel>
+      <PrecompiledHeader>
+      </PrecompiledHeader>
+      <Optimization>MaxSpeed</Optimization>
+      <FunctionLevelLinking>true</FunctionLevelLinking>
+      <IntrinsicFunctions>true</IntrinsicFunctions>
+      <PreprocessorDefinitions>WIN32;NDEBUG;_CONSOLE;%(PreprocessorDefinitions)</PreprocessorDefinitions>
+      <AdditionalIncludeDirectories>$(ProjectDir)\SDL2\include;$(ProjectDir)\SDL2_image\include;$(ProjectDir)\SDL2_mixer\include;$(ProjectDir)\SDL2_ttf\include</AdditionalIncludeDirectories>
+    </ClCompile>
+    <Link>
+      <SubSystem>Console</SubSystem>
+      <GenerateDebugInformation>true</GenerateDebugInformation>
+      <EnableCOMDATFolding>true</EnableCOMDATFolding>
+      <OptimizeReferences>true</OptimizeReferences>
+      <AdditionalDependencies>%(AdditionalDependencies)</AdditionalDependencies>
+      <AdditionalLibraryDirectories>$(ProjectDir)\SDL2\lib\x86;$(ProjectDir)\SDL2_image\lib\x86;$(ProjectDir)\SDL2_mixer\lib\x86;$(ProjectDir)\SDL2_ttf\lib\x86</AdditionalLibraryDirectories>
+    </Link>
+  </ItemDefinitionGroup>
+  <ItemGroup>
+    <ClCompile Include="main.cpp" />
+    <ClCompile Include="sdl1.cpp" />
+    <ClCompile Include="sdl10.cpp" />
+    <ClCompile Include="sdl11.cpp" />
+    <ClCompile Include="sdl12.cpp" />
+    <ClCompile Include="sdl13.cpp" />
+    <ClCompile Include="sdl14.cpp" />
+    <ClCompile Include="sdl15.cpp" />
+    <ClCompile Include="sdl16.cpp" />
+    <ClCompile Include="sdl17.cpp" />
+    <ClCompile Include="sdl18.cpp" />
+    <ClCompile Include="sdl19.cpp" />
+    <ClCompile Include="sdl2.cpp" />
+    <ClCompile Include="sdl20.cpp" />
+    <ClCompile Include="sdl21.cpp" />
+    <ClCompile Include="sdl22.cpp" />
+    <ClCompile Include="sdl23.cpp" />
+    <ClCompile Include="sdl24.cpp" />
+    <ClCompile Include="sdl25.cpp" />
+    <ClCompile Include="sdl26.cpp" />
+    <ClCompile Include="sdl27.cpp" />
+    <ClCompile Include="sdl28.cpp" />
+    <ClCompile Include="sdl29.cpp" />
+    <ClCompile Include="sdl3.cpp" />
+    <ClCompile Include="sdl30.cpp" />
+    <ClCompile Include="sdl31.cpp" />
+    <ClCompile Include="sdl32.cpp" />
+    <ClCompile Include="sdl33.cpp" />
+    <ClCompile Include="sdl34.cpp" />
+    <ClCompile Include="sdl35.cpp" />
+    <ClCompile Include="sdl36.cpp" />
+    <ClCompile Include="sdl37.cpp" />
+    <ClCompile Include="sdl38.cpp" />
+    <ClCompile Include="sdl39.cpp" />
+    <ClCompile Include="sdl4.cpp" />
+    <ClCompile Include="sdl40.cpp" />
+    <ClCompile Include="sdl41.cpp" />
+    <ClCompile Include="sdl42.cpp" />
+    <ClCompile Include="sdl43.cpp" />
+    <ClCompile Include="sdl44.cpp" />
+    <ClCompile Include="sdl45.cpp" />
+    <ClCompile Include="sdl46.cpp" />
+    <ClCompile Include="sdl47.cpp" />
+    <ClCompile Include="sdl48.cpp" />
+    <ClCompile Include="sdl49.cpp" />
+    <ClCompile Include="sdl5.cpp" />
+    <ClCompile Include="sdl6.cpp" />
+    <ClCompile Include="sdl60.cpp" />
+    <ClCompile Include="sdl7.cpp" />
+    <ClCompile Include="sdl8.cpp" />
+    <ClCompile Include="sdl9.cpp" />
+  </ItemGroup>
+  <ItemGroup>
+    <ClInclude Include="sdl_example.h" />
+  </ItemGroup>
+  <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
+  <ImportGroup Label="ExtensionTargets">
+  </ImportGroup>
+</Project>

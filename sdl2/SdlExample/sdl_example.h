@@ -1,0 +1,70 @@
+
+#pragma once
+
+#include <stdio.h>
+#include <stdlib.h>
+
+#include <cmath>
+#include <string>
+#include <sstream>
+#include <vector>
+#include <fstream>
+
+#include <SDL.h>
+#include <SDL_image.h>
+#include <SDL_mixer.h>
+#include <SDL_ttf.h>
+
+int sdl1Main();
+int sdl2Main();
+int sdl3Main();
+int sdl4Main();
+int sdl5Main();
+int sdl6Main();
+int sdl7Main();
+int sdl8Main();
+int sdl9Main();
+int sdl10Main();
+int sdl11Main();
+int sdl12Main();
+int sdl13Main();
+int sdl14Main();
+int sdl15Main();
+int sdl16Main();
+int sdl17Main();
+int sdl18Main();
+int sdl19Main();
+int sdl20Main();
+int sdl21Main();
+int sdl22Main();
+int sdl23Main();
+int sdl24Main();
+int sdl25Main();
+int sdl26Main();
+int sdl27Main();
+int sdl28Main();
+int sdl29Main();
+int sdl30Main();
+int sdl31Main();
+int sdl32Main();
+int sdl33Main();
+int sdl34Main();
+int sdl35Main();
+int sdl36Main();
+int sdl37Main();
+int sdl38Main();
+int sdl39Main();
+int sdl40Main();
+int sdl41Main();
+int sdl42Main();
+int sdl43Main();
+int sdl44Main();
+int sdl45Main();
+int sdl46Main();
+int sdl47Main();
+int sdl48Main();
+int sdl49Main();
+int sdl50Main();
+int sdl51Main();
+
+int sdl60Main();
