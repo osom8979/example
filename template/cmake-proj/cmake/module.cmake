@@ -5,7 +5,7 @@
 # \param _dir        [in] find directory.
 # \param _extension  [in] file extension.
 # \param _module     [in] assign module.
-function (find_extension_and_assign_module _dir _extension _module)
+macro (find_extension_and_assign_module _dir _extension _module)
     #message ("_dir: ${_dir}")
     #message ("_extension: ${_extension}")
     #message ("_module: ${_module}")
@@ -20,5 +20,6 @@ function (find_extension_and_assign_module _dir _extension _module)
         message ("** Find ${_extension} extension.")
         find_package (${_module})
     endif ()
-endfunction () 
+
+endmacro () 
 

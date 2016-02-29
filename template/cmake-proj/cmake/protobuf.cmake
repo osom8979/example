@@ -32,6 +32,8 @@ function (install_protobuf _working _prefix _include_path _library_path)
     execute_process (
         COMMAND ./configure --disable-shared --enable-static
                             --prefix=${_prefix}
+                            CFLAGS=-fPIC
+                            CXXFLAGS=-fPIC
                             #CPPFLAGS=-I${_include_path}
                             #LDFLAGS=-L${_library_path}
         WORKING_DIRECTORY "${_build_dir}"

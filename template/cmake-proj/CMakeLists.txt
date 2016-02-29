@@ -28,10 +28,10 @@ set (TEST_NAME   "tester"  CACHE STRING  "Test program name string.")
 
 set (MAIN_BRIEF  "CMake project template" CACHE STRING "Project_brief.")
 
-set (USE_ZLIB      ON  CACHE BOOL "Use the zlib.")
+set (USE_ZLIB      OFF CACHE BOOL "Use the zlib.")
 set (USE_PROTOBUF  ON  CACHE BOOL "Use the google-protocol-buffers.")
 set (USE_CUDA      ON  CACHE BOOL "Use the nvidia-cuda.")
-set (USE_OBFUSCATE ON CACHE BOOL "Use the obfuscate.")
+set (USE_OBFUSCATE OFF CACHE BOOL "Use the obfuscate.")
 
 set (VERSION_MAJOR  0)
 set (VERSION_MINOR  0)
@@ -56,6 +56,7 @@ set (THIRD_LIB    "${THIRD_PREFIX}/lib")
 
 list (APPEND CMAKE_MODULE_PATH "${PROJECT_SOURCE_DIR}/cmake/modules")
 
+include (cmake/compile.cmake)
 include (cmake/link.cmake)
 include (cmake/module.cmake)
 include (cmake/util.cmake)
