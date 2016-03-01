@@ -56,12 +56,12 @@ set (THIRD_LIB    "${THIRD_PREFIX}/lib")
 
 list (APPEND CMAKE_MODULE_PATH "${PROJECT_SOURCE_DIR}/cmake/modules")
 
-include (cmake/compile.cmake)
-include (cmake/link.cmake)
 include (cmake/module.cmake)
 include (cmake/util.cmake)
 include (cmake/protobuf.cmake)
 include (cmake/zlib.cmake)
+include (cmake/compile.cmake)
+include (cmake/link.cmake)
 
 # [WARNING] Don't move this code.
 # Download & Build, third-party project.
@@ -73,20 +73,6 @@ list (INSERT CMAKE_LIBRARY_PATH 0 "${THIRD_LIB}")
 
 #print_os ()
 #print_compiler_id ()
-
-# -------
-# Module.
-# -------
-
-if (USE_PROTOBUF)
-    find_extension_and_assign_module ("${MAIN_SRC_PREFIX}" "proto" "Protobuf")
-endif ()
-if (USE_CUDA)
-    find_extension_and_assign_module ("${MAIN_SRC_PREFIX}" "cu" "CUDA")
-endif ()
-if (USE_OBFUSCATE)
-    find_package (CxxObfuscator)
-endif ()
 
 # -------------------
 # Configure settings.
