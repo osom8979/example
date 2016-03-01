@@ -16,3 +16,12 @@ add_library (${MAIN_NAME} ${_objects})
 #add_dependencies (${MAIN_NAME} ${THIRD_NAME})
 target_link_libraries (${MAIN_NAME} ${_libraries})
 
+# Install ${CMAKE_INSTALL_PREFIX} settings.
+install (TARGETS ${MAIN_NAME}
+         RUNTIME DESTINATION bin
+         LIBRARY DESTINATION lib
+         ARCHIVE DESTINATION lib)
+install (DIRECTORY ${MAIN_NAME}/
+         DESTINATION include/${MAIN_NAME}
+         FILES_MATCHING PATTERN "*.h")
+
