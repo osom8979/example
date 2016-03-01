@@ -26,7 +26,9 @@ set (THIRD_NAME  "third"   CACHE STRING  "Third-party library name string.")
 set (SAMPLE_NAME "sample"  CACHE STRING  "Sample program name string.")
 set (TEST_NAME   "tester"  CACHE STRING  "Test program name string.")
 
-set (MAIN_BRIEF  "CMake project template" CACHE STRING "Project_brief.")
+set (MAIN_BRIEF  "-"          CACHE STRING  "Project brief string.")
+set (MAIN_AUTHOR "Anonymous"  CACHE STRING  "Project author.")
+set (MAIN_EMAIL  "-"          CACHE STRING  "E-Mail address.")
 
 set (USE_ZLIB      OFF CACHE BOOL "Use the zlib.")
 set (USE_PROTOBUF  ON  CACHE BOOL "Use the google-protocol-buffers.")
