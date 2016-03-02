@@ -8,24 +8,30 @@
 # \param _library_path [in] LINK, library path.
 function (install_protobuf _working _prefix _include_path _library_path)
 
-    set (_proj_name "protobuf")
-    set (_proj_url  "https://github.com/google/protobuf.git")
-    set (_build_dir "${_working}/${_proj_name}")
+    set (_proj_name     "protobuf-3.0.0-beta-2")
+    set (_proj_url      "https://codeload.github.com/google/protobuf/tar.gz/v3.0.0-beta-2")
+    set (_download_file "${_working}/${_proj_name}.tar.gz")
+    set (_build_dir     "${_working}/${_proj_name}")
 
-    if (NOT EXISTS "${_build_dir}")
+    if (NOT EXISTS "${_download_file}")
         message ("** Download ${_proj_name}")
         execute_process (
-            COMMAND git clone --depth=1 ${_proj_url}
-            WORKING_DIRECTORY "${_working}"
-        )
+            COMMAND curl -k -o "${_download_file}" "${_proj_url}"
+            WORKING_DIRECTORY "${_working}")
+    endif ()
+
+    if (NOT EXISTS "${_build_dir}")
+        message ("** Extract ${_proj_name}")
+        execute_process (
+            COMMAND tar xzf "${_download_file}"
+            WORKING_DIRECTORY "${_working}")
     endif ()
 
     if (NOT EXISTS "${_build_dir}/configure")
         message ("** Autogen ${_proj_name}")
         execute_process (
             COMMAND ./autogen.sh
-            WORKING_DIRECTORY "${_build_dir}"
-        )
+            WORKING_DIRECTORY "${_build_dir}")
     endif ()
 
     message ("** Configure ${_proj_name}")
@@ -36,8 +42,7 @@ function (install_protobuf _working _prefix _include_path _library_path)
                             CXXFLAGS=-fPIC
                             #CPPFLAGS=-I${_include_path}
                             #LDFLAGS=-L${_library_path}
-        WORKING_DIRECTORY "${_build_dir}"
-    )
+        WORKING_DIRECTORY "${_build_dir}")
 
     include (ProcessorCount)
     ProcessorCount (_process_count)
@@ -46,14 +51,12 @@ function (install_protobuf _working _prefix _include_path _library_path)
     message ("** Build ${_proj_name}")
     execute_process (
         COMMAND make -j${_thread_count} V=0
-        WORKING_DIRECTORY "${_build_dir}"
-    )
+        WORKING_DIRECTORY "${_build_dir}")
 
     message ("** Install ${_proj_name}")
     execute_process (
         COMMAND make install
-        WORKING_DIRECTORY "${_build_dir}"
-    )
+        WORKING_DIRECTORY "${_build_dir}")
 endfunction ()
 
 #! bug fix version of protobuf_generate_cpp function.

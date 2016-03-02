@@ -31,7 +31,7 @@ endif ()
 # \param _obfus       [out] value name of result Obfuscated source files.
 # \param _sources     [in]  original source files.
 # \param _except_file [in]  file path of exception symbol list.
-function (obfus_generate_cpp _result _sources _except_file)
+function (obfus_generate_cpp _obfus _sources _except_file)
     #message ("_obfus (${_obfus}): ${${_obfus}}")
     #message ("_sources (${_sources}): ${${_sources}}")
 
@@ -53,7 +53,7 @@ function (obfus_generate_cpp _result _sources _except_file)
         string (REPLACE "${PROJECT_SOURCE_DIR}" "${PROJECT_BINARY_DIR}" _bin_path ${_directory})
 
         set (_obfus_extension ".obfus${_extension}")
-        set (_cursor_of_obfus_path "${_bin_path}/${_name_we}${_obfus_extension}"
+        set (_cursor_of_obfus_path "${_bin_path}/${_name_we}${_obfus_extension}")
 
         get_filename_component (_cursor_of_output_dir ${_cursor_of_obfus_path} DIRECTORY)
 
@@ -63,7 +63,7 @@ function (obfus_generate_cpp _result _sources _except_file)
 
         add_custom_command (
             OUTPUT  ${_cursor_of_obfus_path}
-            COMMAND ${CXX_OBFUSCATOR_COMPILER} ${_absolute} -o ${_cursor_of_obfus_path} ${_flags}
+            COMMAND "${CXX_OBFUSCATOR_COMPILER}" ${_absolute} -o ${_cursor_of_obfus_path} ${_flags}
             DEPENDS ${_absolute}
             COMMENT "Running C++ Obfuscator compiler on ${_cursor}" VERBATIM)
 

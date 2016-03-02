@@ -33,7 +33,7 @@ set (MAIN_EMAIL  "-"          CACHE STRING  "E-Mail address.")
 set (USE_ZLIB      OFF CACHE BOOL "Use the zlib.")
 set (USE_PROTOBUF  ON  CACHE BOOL "Use the google-protocol-buffers.")
 set (USE_CUDA      ON  CACHE BOOL "Use the nvidia-cuda.")
-set (USE_OBFUSCATE OFF CACHE BOOL "Use the obfuscate.")
+set (USE_OBFUSCATE ON  CACHE BOOL "Use the obfuscate.")
 
 set (VERSION_MAJOR  0)
 set (VERSION_MINOR  0)

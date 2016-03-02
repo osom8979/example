@@ -27,11 +27,12 @@ function (find_compile_object _objs _libs _find_dir)
 
 
     # C++ Obfuscator or Native C/C++ Source files.
+    set (_obfus_excepted_path "${CMAKE_CURRENT_SOURCE_DIR}/obfus_excepted")
     if (USE_OBFUSCATE)
         find_package (CxxObfuscator)
     endif ()
-    if (USE_OBFUSCATE AND CXX_OBFUSCATOR_FOUND)
-        obfus_generate_cpp (_find_obfus "${_find_srcs}" "obfus_excepted")
+    if (USE_OBFUSCATE AND CXX_OBFUSCATOR_FOUND AND (EXISTS "${_obfus_excepted_path}"))
+        obfus_generate_cpp (_find_obfus "${_find_srcs}" "${_obfus_excepted_path}")
         list (APPEND ${_objs} ${_find_obfus})
     else ()
         list (APPEND ${_objs} ${_find_srcs})

@@ -15,35 +15,30 @@ function (install_zlib _working _prefix)
         message ("** Download ${_proj_name}")
         execute_process (
             COMMAND curl -o "${_download_file}" "${_proj_url}"
-            WORKING_DIRECTORY "${_working}"
-        )
+            WORKING_DIRECTORY "${_working}")
     endif ()
 
     if (NOT EXISTS "${_build_dir}")
         message ("** Extract ${_proj_name}")
         execute_process (
-            COMMAND tar vxzf "${_download_file}"
-            WORKING_DIRECTORY "${_working}"
-        )
+            COMMAND tar xzf "${_download_file}"
+            WORKING_DIRECTORY "${_working}")
     endif ()
 
     message ("** Configure ${_proj_name}")
     execute_process (
         COMMAND ./configure --prefix=${_prefix}
-        WORKING_DIRECTORY "${_build_dir}"
-    )
+        WORKING_DIRECTORY "${_build_dir}")
 
     message ("** Build ${_proj_name}")
     execute_process (
         COMMAND make
-        WORKING_DIRECTORY "${_build_dir}"
-    )
+        WORKING_DIRECTORY "${_build_dir}")
 
     message ("** Install ${_proj_name}")
     execute_process (
         COMMAND make install
-        WORKING_DIRECTORY "${_build_dir}"
-    )
+        WORKING_DIRECTORY "${_build_dir}")
 
 endfunction ()
 
