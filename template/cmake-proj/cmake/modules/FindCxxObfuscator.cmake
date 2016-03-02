@@ -8,10 +8,10 @@
 #  CXX_OBFUSCATOR_COMPILER
 
 set (CXX_OBFUSCATOR_SEARCH_PATHS
-  "/usr/bin"
-  "/usr/local/bin" "/Applications/Run\ C++\ Obfuscator.app/Contents/Resources/bin/"
-  "$ENV{CXX_OBFUSCATOR_ROOT_DIR}"
-)
+    "/usr/bin"
+    "/usr/local/bin"
+    "/Applications/Run\ C++\ Obfuscator.app/Contents/Resources/bin/"
+    "$ENV{CXX_OBFUSCATOR_ROOT_DIR}")
 
 find_program (CXX_OBFUSCATOR_COMPILER NAMES "cxx-obfus" PATHS ${CXX_OBFUSCATOR_SEARCH_PATHS})
 

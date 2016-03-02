@@ -58,7 +58,6 @@ set (THIRD_LIB    "${THIRD_PREFIX}/lib")
 
 list (APPEND CMAKE_MODULE_PATH "${PROJECT_SOURCE_DIR}/cmake/modules")
 
-include (cmake/module.cmake)
 include (cmake/util.cmake)
 include (cmake/protobuf.cmake)
 include (cmake/zlib.cmake)
