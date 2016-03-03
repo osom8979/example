@@ -1,4 +1,14 @@
-# CMake common utility script.
+## CMake common utility script.
+
+if (WIN32 AND NOT MSYS AND NOT CYGWIN)
+    set (PATH_SEPARATOR ";")
+else ()
+    set (PATH_SEPARATOR ":")
+endif ()
+
+## -------------------
+## System information.
+## -------------------
 
 #! Print your os.
 function (print_os)
@@ -6,24 +16,21 @@ function (print_os)
         # including Apple OS X and CygWin.
         message ("Unix-like OS's.")
     endif ()
-
     if (WIN32)
         # Prior to 2.8.4 this included CygWin.
         message ("Windows OS.")
     endif ()
-
     if (APPLE)
         message ("Apple systems.")
     endif ()
 endfunction ()
 
-# Compiler & IDE:
-# CLANG GNU
-# MINGW MSYS CYGWIN
-# BORLAND WATCOM
-# MSVC MSVC_IDE MSVC60 MSVC70 MSVC71 MSVC80 CMAKE_COMPILER_2005 MSVC90 MSVC10
-
 function (print_compiler)
+    # Compiler & IDE:
+    # CLANG GNU
+    # MINGW MSYS CYGWIN
+    # BORLAND WATCOM
+    # MSVC MSVC_IDE MSVC60 MSVC70 MSVC71 MSVC80 CMAKE_COMPILER_2005 MSVC90 MSVC10
     message (WARNING "Not implement.")
 endfunction ()
 
@@ -42,16 +49,22 @@ function (exists_define_or_die _value)
     endif()
 endfunction ()
 
-#! Append list to list.
-#
-# \param _value      [out] output value name.
-# \param _list_value [in]  list value name.
-macro (append_list _value _list_value)
-    #message ("_value: ${_value} (${${_value}})")
-    #message ("_list_value: ${_list_value} (${${_list_value}})")
 
-    foreach (cursor ${${_list_value}})
-        list (APPEND ${_value} ${cursor})
+## ------------------
+## String operations.
+## ------------------
+
+#! List of regex.
+#
+# \param _value [out] output value name.
+# \param _regex [in]  Regex string.
+# \param _list  [in]  Original list.
+function (list_regex _value _regex _list)
+    set (${_value})
+    foreach (_cursor ${_list})
+        string (REGEX MATCH "${_regex}" _match_cursor ${_cursor})
+        list (APPEND ${_value} ${_match_cursor})
     endforeach ()
-endmacro () 
+    set (${_value} ${${_value}} PARENT_SCOPE)
+endfunction ()
 

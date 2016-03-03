@@ -1,8 +1,6 @@
 /**
- * @file   sample.cpp
- * @brief  Sample program entry-point.
- * @author zer0
- * @date   2016-02-19
+ * @file   main.cpp
+ * @brief  Program entry-point.
  */
 
 #include <iostream>

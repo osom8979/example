@@ -151,10 +151,9 @@ cscope.out
 
 ###############
 ### PROJECT ###
-/third/*
-!/third/CMakeLists.txt
-/src/**/prefix.h
-/src/**/config.h
 /build
+/3rd
 /Doxyfile
+/**/prefix.h
+/**/config.h
 
