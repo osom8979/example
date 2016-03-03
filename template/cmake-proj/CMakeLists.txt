@@ -111,7 +111,9 @@ set (_lib_proj_glob  "^lib[^/]+/${_PROJECT_NAME_REGEX}$")
 set (_test_proj_glob "^test[^/]+/${_PROJECT_NAME_REGEX}$")
 set (_exe_proj_glob  "^[^/]+/${_PROJECT_NAME_REGEX}$")
 
-file (GLOB_RECURSE _find_cmakelists RELATIVE "${PROJECT_SOURCE_DIR}" "*/${_PROJECT_NAME}")
+file (GLOB_RECURSE _find_cmakelists RELATIVE "${PROJECT_SOURCE_DIR}" "${_PROJECT_NAME}")
+
+message ("_find_cmakelists: ${_find_cmakelists}")
 # Find library project.
 list_regex (_find_lib_proj "${_lib_proj_glob}" "${_find_cmakelists}")
 
