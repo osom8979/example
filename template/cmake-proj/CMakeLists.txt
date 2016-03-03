@@ -62,7 +62,6 @@ include (cmake/util.cmake)
 include (cmake/protobuf.cmake)
 include (cmake/zlib.cmake)
 include (cmake/compile.cmake)
-include (cmake/link.cmake)
 
 # [WARNING] Don't move this code.
 # Download & Build, third-party project.
