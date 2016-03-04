@@ -65,6 +65,9 @@ set (CMAKE_INSTALL_RPATH_USE_LINK_PATH TRUE)
 # Download & Build, third-party project.
 build_3rd ("${LIST_OF_LIBRARIES}" "${THIRD_PREFIX}")
 
+# Extension variables.
+set (GTEST_ROOT "${THIRD_PREFIX}")
+
 # -------------------
 # Configure settings.
 # -------------------

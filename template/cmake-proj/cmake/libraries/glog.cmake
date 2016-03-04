@@ -1,7 +1,7 @@
-## CMake gflags build script.
+## CMake glog build script.
 
 if (VERBOSE)
-    message (">> Library name: google-gflags")
+    message (">> Library name: google-glog")
     message (">> Working directory: ${WORKING_DIR}")
     message (">> Install prefix: ${INSTALL_PREFIX}")
     message (">> Include path: ${INCLUDE_PATH}")
@@ -11,8 +11,8 @@ if (VERBOSE)
     message (">> CMAKE_EXECUTABLE_SUFFIX: ${CMAKE_EXECUTABLE_SUFFIX}")
 endif ()
 
-set (_proj_name     "gflags-2.1.2")
-set (_proj_url      "https://codeload.github.com/gflags/gflags/tar.gz/v2.1.2")
+set (_proj_name     "glog-0.3.4")
+set (_proj_url      "https://codeload.github.com/google/glog/tar.gz/v0.3.4")
 set (_working       "${WORKING_DIR}")
 set (_prefix        "${INSTALL_PREFIX}")
 set (_include_path  "${INCLUDE_PATH}")
@@ -21,7 +21,7 @@ set (_download_file "${_working}/${_proj_name}.tar.gz")
 set (_build_dir     "${_working}/${_proj_name}")
 
 # exists library.
-set (_static_lib_name  "${CMAKE_STATIC_LIBRARY_PREFIX}gflags${CMAKE_STATIC_LIBRARY_SUFFIX}")
+set (_static_lib_name  "${CMAKE_STATIC_LIBRARY_PREFIX}glog${CMAKE_STATIC_LIBRARY_SUFFIX}")
 set (_static_lib       "${_prefix}/lib/${_static_lib_name}")
 
 if (EXISTS ${_static_lib})
@@ -48,7 +48,10 @@ endif ()
 if (NOT EXISTS "${_build_dir}/Makefile")
     message (">> Configure ${_proj_name}")
     execute_process (
-        COMMAND ${CMAKE_COMMAND} -DCMAKE_INSTALL_PREFIX=${_prefix} -G "Unix Makefiles" .
+        COMMAND ./configure --disable-shared --enable-static --quiet
+                            --prefix=${_prefix}
+                            CFLAGS=-fpic
+                            CXXFLAGS=-fpic
         WORKING_DIRECTORY "${_build_dir}")
 endif ()
 
