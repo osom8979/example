@@ -20,6 +20,7 @@ set (MAIN_EMAIL  "email"      CACHE STRING  "Author E-mail address.")
 
 # Libraries.
 set (LIST_OF_LIBRARIES)
+add_library_value ("gtest"     ON  LIST_OF_LIBRARIES)
 add_library_value ("zlib"      ON  LIST_OF_LIBRARIES)
 add_library_value ("protobuf"  ON  LIST_OF_LIBRARIES)
 set (LIST_OF_LIBRARIES ${LIST_OF_LIBRARIES})
