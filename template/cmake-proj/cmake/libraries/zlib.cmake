@@ -46,7 +46,7 @@ endif ()
 
 message (">> Configure ${_proj_name}")
 execute_process (
-    COMMAND ./configure --prefix=${_prefix}
+    COMMAND ./configure --prefix=${_prefix} --static
     WORKING_DIRECTORY "${_build_dir}")
 
 message (">> Build ${_proj_name}")

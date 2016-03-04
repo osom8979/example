@@ -49,15 +49,17 @@ set (THIRD_BIN     "${THIRD_PREFIX}/bin")
 set (THIRD_INC     "${THIRD_PREFIX}/include")
 set (THIRD_LIB     "${THIRD_PREFIX}/lib")
 
-set (ENV{PATH}             "${THIRD_BIN}${PATH_SEPARATOR}$ENV{PATH}")
-set (ENV{CPATH}            "${THIRD_INC}${PATH_SEPARATOR}$ENV{CPATH}")
-set (ENV{LIBRARY_PATH}     "${THIRD_LIB}${PATH_SEPARATOR}$ENV{LIBRARY_PATH}")
-set (ENV{LD_LIBRARY_PATH}  "${THIRD_LIB}${PATH_SEPARATOR}$ENV{LD_LIBRARY_PATH}")
+set (ENV{PATH}         "${THIRD_BIN}${PATH_SEPARATOR}$ENV{PATH}")
+set (ENV{CPATH}        "${THIRD_INC}${PATH_SEPARATOR}$ENV{CPATH}")
+set (ENV{LIBRARY_PATH} "${THIRD_LIB}${PATH_SEPARATOR}$ENV{LIBRARY_PATH}")
 
 list (INSERT CMAKE_PROGRAM_PATH 0 "${THIRD_BIN}")
 list (INSERT CMAKE_LIBRARY_PATH 0 "${THIRD_LIB}")
 list (INSERT CMAKE_PROGRAM_PATH 0 "${PROJECT_SOURCE_DIR}")
 list (INSERT CMAKE_LIBRARY_PATH 0 "${PROJECT_SOURCE_DIR}")
+
+set (CMAKE_INSTALL_RPATH "${THIRD_LIB}")
+set (CMAKE_INSTALL_RPATH_USE_LINK_PATH TRUE)
 
 # [WARNING] Don't move this code.
 # Download & Build, third-party project.
@@ -113,7 +115,6 @@ set (_exe_proj_glob  "^[^/]+/${_PROJECT_NAME_REGEX}$")
 
 file (GLOB_RECURSE _find_cmakelists RELATIVE "${PROJECT_SOURCE_DIR}" "${_PROJECT_NAME}")
 
-message ("_find_cmakelists: ${_find_cmakelists}")
 # Find library project.
 list_regex (_find_lib_proj "${_lib_proj_glob}" "${_find_cmakelists}")
 

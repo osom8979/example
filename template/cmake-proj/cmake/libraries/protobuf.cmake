@@ -11,6 +11,7 @@ if (VERBOSE)
     message (">> CMAKE_EXECUTABLE_SUFFIX: ${CMAKE_EXECUTABLE_SUFFIX}")
 endif ()
 
+
 set (_proj_name     "protobuf-3.0.0-beta-2")
 set (_proj_url      "https://codeload.github.com/google/protobuf/tar.gz/v3.0.0-beta-2")
 set (_working       "${WORKING_DIR}")
@@ -57,19 +58,23 @@ if (NOT EXISTS "${_build_dir}/configure")
         WORKING_DIRECTORY "${_build_dir}")
 endif ()
 
-message (">> Configure ${_proj_name}")
-execute_process (
-    COMMAND ./configure --disable-shared --enable-static
-                        --prefix=${_prefix}
-                        CFLAGS=-fPIC
-                        CXXFLAGS=-fPIC
-                        #CPPFLAGS=-I${_include_path}
-                        #LDFLAGS=-L${_library_path}
-    WORKING_DIRECTORY "${_build_dir}")
+if (NOT EXISTS "${_build_dir}/Makefile")
+    message (">> Configure ${_proj_name}")
+    execute_process (
+        COMMAND ./configure --disable-shared --enable-static --quiet
+                            --prefix=${_prefix}
+                            CFLAGS=-fPIC
+                            CXXFLAGS=-fPIC
+                            #"LDFLAGS=-Wl,-rpath,${_library_path}"
+                            #LT_SYS_LIBRARY_PATH=${_library_path}
+                            #CPPFLAGS=-I${_include_path}
+                            #LDFLAGS=-L${_library_path}
+        WORKING_DIRECTORY "${_build_dir}")
+endif ()
 
 message (">> Build ${_proj_name}")
 execute_process (
-    COMMAND make -j${_thread_count} V=0
+    COMMAND make -j${_thread_count} V=1
     WORKING_DIRECTORY "${_build_dir}")
 
 message (">> Install ${_proj_name}")
