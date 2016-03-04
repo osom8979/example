@@ -10,7 +10,7 @@ set (BUILD_PROJECT_FILE_REGEX "[^/]+/${BUILD_PROJECT_FILE_PREFIX}\\.${BUILD_PROJ
 
 set (BUILD_LIB_PROJ_PREFIX  "lib")
 set (BUILD_TEST_PROJ_PREFIX "test")
-set (BUILD_EXE_PROJ_PREFIX  "exe")
+set (BUILD_EXE_PROJ_PREFIX  "")
 
 set (BUILD_LIB_PROJ_GLOB  "^${BUILD_LIB_PROJ_PREFIX}${BUILD_PROJECT_FILE_REGEX}$")
 set (BUILD_TEST_PROJ_GLOB "^${BUILD_TEST_PROJ_PREFIX}${BUILD_PROJECT_FILE_REGEX}$")
@@ -56,25 +56,37 @@ function (find_project _lib_projs _test_projs _exe_projs)
     set (${_exe_projs}  ${${_exe_projs}}  PARENT_SCOPE)
 endfunction ()
 
-set (BUILD_PROJECT_TYPE_LIB      "${BUILD_LIB_PROJ_PREFIX}")
-set (BUILD_PROJECT_TYPE_TEST     "${BUILD_TEST_PROJ_PREFIX}")
-set (BUILD_PROJECT_TYPE_EXE      "${BUILD_EXE_PROJ_PREFIX}")
-set (BUILD_PROJECT_TYPE_UNKNOWN  "unknown")
+set (BUILD_PROJECT_TYPE_LIB  "${BUILD_LIB_PROJ_PREFIX}")
+set (BUILD_PROJECT_TYPE_TEST "${BUILD_TEST_PROJ_PREFIX}")
+set (BUILD_PROJECT_TYPE_EXE  "${BUILD_EXE_PROJ_PREFIX}")
 
 #! Check the project type.
 #
-# \param _value [out] value name of result type string.
+# \param _value             [out] value name of result type string.
+# \param _project_dir_name  [in]  project directory name.
 function (get_project_type _value _project_dir_name)
     if (${_project_dir_name} MATCHES "^${BUILD_LIB_PROJ_PREFIX}.+")
         set (${_value} "${BUILD_PROJECT_TYPE_LIB}" PARENT_SCOPE)
     elseif (${_project_dir_name} MATCHES "^${BUILD_TEST_PROJ_PREFIX}.+")
         set (${_value} "${BUILD_PROJECT_TYPE_TEST}" PARENT_SCOPE)
-    elseif (${_project_dir_name} MATCHES "^${BUILD_EXE_PROJ_PREFIX}.+")
-        set (${_value} "${BUILD_PROJECT_TYPE_EXE}" PARENT_SCOPE)
     else ()
-        set (${_value} "${BUILD_PROJECT_TYPE_UNKNOWN}" PARENT_SCOPE)
+        set (${_value} "${BUILD_PROJECT_TYPE_EXE}" PARENT_SCOPE)
     endif ()
 endfunction()
+
+#! Check the project type.
+#
+# \param _value             [out] value name of result type string.
+# \param _type              [in]  project type name.
+# \param _project_dir_name  [in]  project directory name.
+function (get_project_name _value _type _project_dir_name)
+    if ("${_type}" STREQUAL "${BUILD_PROJECT_TYPE_LIB}")
+        string (REPLACE "${BUILD_PROJECT_TYPE_LIB}" "" _temp_name "${_project_dir_name}")
+        set (${_value} "${_temp_name}" PARENT_SCOPE)
+    else ()
+        set (${_value} "${_project_dir_name}" PARENT_SCOPE)
+    endif ()
+endfunction ()
 
 #! Default build process.
 #
@@ -94,42 +106,29 @@ function (default_build _libs _tests _exes)
 
         set (_project_dir ${_cursor})
         get_project_type (_project_type "${_cursor}")
-        string (REPLACE "${_project_type}" "" _project_name ${_cursor})
-
-        if (_project_is_verbose)
-            message ("++ Project type: ${_project_type}")
-        endif ()
+        get_project_name (_project_name "${_project_type}" "${_cursor}")
 
         project (${_project_name})
 
         # Compile files.
         find_compile_object (_project_objects _project_libraries "${PROJECT_SOURCE_DIR}/${_project_dir}")
 
+        # Test project settings.
+        if ("${_project_type}" STREQUAL "${BUILD_PROJECT_TYPE_TEST}")
+            find_package (GTest)
+            if (GTEST_FOUND)
+                list (APPEND _project_libraries "${GTEST_BOTH_LIBRARIES}")
+            endif ()
+        endif ()
+
+
         # User defined sub-project settings.
         include ("${PROJECT_SOURCE_DIR}/${_project_dir}/${BUILD_PROJECT_FILE_NAME}")
 
-        # After settings.
-        set  (_project_total_libs ${_project_dependencies} ${_project_libraries})
-        list (LENGTH _project_total_libs _project_total_libs_length)
-        list (LENGTH _project_dependencies _project_dependencies_length)
+
+        # -------------------------------
+        # Register library or executable.
         list (LENGTH _project_objects _project_objects_length)
-
-        # Dependencies setting.
-        if (${_project_dependencies_length} GREATER 0)
-            if (_project_is_verbose)
-                message ("++ Dependencies: ${_project_dependencies}")
-            endif ()
-            add_dependencies (${_project_name} ${_project_dependencies})
-        endif ()
-
-        # Libraries setting.
-        if (${_project_total_libs_length} GREATER 0)
-            if (_project_is_verbose)
-                message ("++ Libraries: ${_project_total_libs}")
-            endif ()
-            target_link_libraries (${_project_name} ${_project_total_libs})
-        endif ()
-
         if (${_project_objects_length} GREATER 0)
             if ("${_project_type}" STREQUAL "${BUILD_PROJECT_TYPE_LIB}")
                 add_library (${_project_name} ${_project_objects})
@@ -138,6 +137,19 @@ function (default_build _libs _tests _exes)
             endif ()
         else ()
             message (FATAL_ERROR "Not found ${_project_name} object files.")
+        endif ()
+
+        # Dependencies setting.
+        list (LENGTH _project_dependencies _project_dependencies_length)
+        if (${_project_dependencies_length} GREATER 0)
+            add_dependencies (${_project_name} ${_project_dependencies})
+        endif ()
+
+        # Libraries setting.
+        set (_project_total_libs ${_project_dependencies} ${_project_libraries})
+        list (LENGTH _project_total_libs _project_total_libs_length)
+        if (${_project_total_libs_length} GREATER 0)
+            target_link_libraries (${_project_name} ${_project_total_libs})
         endif ()
     endforeach ()
 endfunction ()
