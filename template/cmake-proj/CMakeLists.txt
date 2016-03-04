@@ -104,44 +104,14 @@ link_directories (${THIRD_LIB})
 # Sub-project.
 # ------------
 
-set (_PROJECT_PREFIX      "project")
-set (_PROJECT_SUFFIX      "cmake")
-SET (_PROJECT_NAME        "${_PROJECT_PREFIX}.${_PROJECT_SUFFIX}")
-SET (_PROJECT_NAME_REGEX  "${_PROJECT_PREFIX}\\.${_PROJECT_SUFFIX}")
-
-set (_lib_proj_glob  "^lib[^/]+/${_PROJECT_NAME_REGEX}$")
-set (_test_proj_glob "^test[^/]+/${_PROJECT_NAME_REGEX}$")
-set (_exe_proj_glob  "^[^/]+/${_PROJECT_NAME_REGEX}$")
-
-file (GLOB_RECURSE _find_cmakelists RELATIVE "${PROJECT_SOURCE_DIR}" "${_PROJECT_NAME}")
-
-# Find library project.
-list_regex (_find_lib_proj "${_lib_proj_glob}" "${_find_cmakelists}")
-
-# Find test executable project.
-list (LENGTH _find_lib_proj _find_lib_proj_length)
-if (${_find_lib_proj_length} GREATER 0)
-    list (REMOVE_ITEM _find_cmakelists ${_find_lib_proj})
-endif ()
-list_regex (_find_test_proj "${_test_proj_glob}" "${_find_cmakelists}")
-
-# Find executable project.
-list (LENGTH _find_test_proj _find_test_proj_length)
-if (${_find_test_proj_length} GREATER 0)
-    list (REMOVE_ITEM _find_cmakelists ${_find_test_proj})
-endif ()
-list_regex (_find_exe_proj "${_exe_proj_glob}" "${_find_cmakelists}")
-
-string (REPLACE "/${_PROJECT_NAME}" "" _lib_proj_list  "${_find_lib_proj}")
-string (REPLACE "/${_PROJECT_NAME}" "" _test_proj_list "${_find_test_proj}")
-string (REPLACE "/${_PROJECT_NAME}" "" _exe_proj_list  "${_find_exe_proj}")
+find_project (_lib_proj_list _test_proj_list _exe_proj_list)
 
 message ("** Find library project: ${_lib_proj_list}")
 message ("** Find test project: ${_test_proj_list}")
 message ("** Find executable project: ${_exe_proj_list}")
 
+default_build ("${_lib_proj_list}" "${_test_proj_list}" "${_exe_proj_list}")
+
 #print_os ()
 #print_compiler_id ()
-
-default_build ("${_lib_proj_list}" "${_test_proj_list}" "${_exe_proj_list}")
 
