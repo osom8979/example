@@ -26,6 +26,7 @@ add_library_value ("protobuf"  ON  LIST_OF_LIBRARIES)
 add_library_value ("gflags"    ON  LIST_OF_LIBRARIES)
 add_library_value ("glog"      ON  LIST_OF_LIBRARIES)
 add_library_value ("boost"     ON  LIST_OF_LIBRARIES)
+add_library_value ("lmdb"      ON  LIST_OF_LIBRARIES)
 set (LIST_OF_LIBRARIES ${LIST_OF_LIBRARIES})
 
 # Main version.
