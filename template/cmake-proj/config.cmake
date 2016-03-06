@@ -31,6 +31,7 @@ add_library_value ("hdf5"      ON  LIST_OF_LIBRARIES)
 add_library_value ("openblas"  ON  LIST_OF_LIBRARIES)
 add_library_value ("libuv"     ON  LIST_OF_LIBRARIES)
 add_library_value ("snappy"    ON  LIST_OF_LIBRARIES)
+add_library_value ("leveldb"   ON  LIST_OF_LIBRARIES)
 set (LIST_OF_LIBRARIES ${LIST_OF_LIBRARIES})
 
 # Main version.
