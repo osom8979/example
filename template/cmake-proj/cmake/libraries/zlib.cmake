@@ -51,7 +51,7 @@ execute_process (
 
 message (">> Build ${_proj_name}")
 execute_process (
-    COMMAND make
+    COMMAND make CFLAGS=-fPIC
     WORKING_DIRECTORY "${_build_dir}")
 
 message (">> Install ${_proj_name}")
