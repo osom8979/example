@@ -21,7 +21,8 @@ set (_download_file "${_working}/${_proj_name}.tar.gz")
 set (_build_dir     "${_working}/${_proj_name}")
 
 # exists library.
-set (_static_lib "${_prefix}/lib/${CMAKE_STATIC_LIBRARY_PREFIX}z${CMAKE_STATIC_LIBRARY_SUFFIX}")
+set (_static_lib_name  "${CMAKE_STATIC_LIBRARY_PREFIX}z${CMAKE_STATIC_LIBRARY_SUFFIX}")
+set (_static_lib       "${_prefix}/lib/${_static_lib_name}")
 
 if (EXISTS ${_static_lib})
     message (">> Exists library: ${_static_lib}")

@@ -74,7 +74,7 @@ endif ()
 
 message (">> Build ${_proj_name}")
 execute_process (
-    COMMAND make -j${_thread_count} V=1
+    COMMAND make -j${_thread_count} V=0
     WORKING_DIRECTORY "${_build_dir}")
 
 message (">> Install ${_proj_name}")
