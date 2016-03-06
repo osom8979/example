@@ -50,8 +50,8 @@ if (NOT EXISTS "${_build_dir}/Makefile")
     execute_process (
         COMMAND ./configure --disable-shared --enable-static --quiet
                             --prefix=${_prefix}
-                            CFLAGS=-fpic
-                            CXXFLAGS=-fpic
+                            CFLAGS=-fPIC
+                            CXXFLAGS=-fPIC
         WORKING_DIRECTORY "${_build_dir}")
 endif ()
 
