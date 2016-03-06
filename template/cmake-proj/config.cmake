@@ -35,6 +35,7 @@ add_library_value ("leveldb"   ON  LIST_OF_LIBRARIES)
 add_library_value ("ffmpeg"    ON  LIST_OF_LIBRARIES)
 add_library_value ("libpng"    ON  LIST_OF_LIBRARIES)
 add_library_value ("wxwidgets" ON  LIST_OF_LIBRARIES)
+add_library_value ("opencv3"   ON  LIST_OF_LIBRARIES)
 set (LIST_OF_LIBRARIES ${LIST_OF_LIBRARIES})
 
 # Main version.
