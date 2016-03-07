@@ -49,6 +49,19 @@ function (exists_define_or_die _value)
     endif()
 endfunction ()
 
+## -----------------
+## Module utilities.
+## -----------------
+
+#! Test find_package() function.
+#
+# \param _enable      [in] Enable variable.
+# \param _module_name [in] Module name.
+function (test_find_package _enable _module_name)
+    if (USE_${_enable})
+        find_package (${_module_name})
+    endif ()
+endfunction ()
 
 ## ------------------
 ## String operations.

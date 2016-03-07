@@ -21,7 +21,7 @@ set (MAIN_EMAIL  "email"      CACHE STRING  "Author E-mail address.")
 # Libraries.
 set (LIST_OF_LIBRARIES)
 add_library_value ("zlib"      ON   LIST_OF_LIBRARIES)
-add_library_value ("protobuf"  OFF  LIST_OF_LIBRARIES)
+add_library_value ("protobuf"  ON   LIST_OF_LIBRARIES)
 add_library_value ("gtest"     OFF  LIST_OF_LIBRARIES)
 add_library_value ("gflags"    OFF  LIST_OF_LIBRARIES)
 add_library_value ("glog"      OFF  LIST_OF_LIBRARIES)

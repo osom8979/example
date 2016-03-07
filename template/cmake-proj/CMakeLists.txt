@@ -70,11 +70,9 @@ set (ZLIB_ROOT  "${THIRD_PREFIX}")
 set (GTEST_ROOT "${THIRD_PREFIX}")
 
 # Test packages.
-set (TEST_FIND_PACKAGE ON)
-if  (TEST_FIND_PACKAGE)
-    find_package (ZLIB)
-    find_package (GTest)
-endif ()
+test_find_package (zlib      ZLIB)
+test_find_package (protobuf  Protobuf)
+test_find_package (gtest     GTest)
 
 # -------------------
 # Configure settings.

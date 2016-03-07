@@ -22,6 +22,10 @@ if (_library_verbose)
     message  (">> _library_test: ${_library_test}")
 endif ()
 
+include (ProcessorCount)
+ProcessorCount (_process_count)
+math (EXPR _thread_count "${_process_count} * 2")
+
 set (_library_verbose OFF)
 set (_library_clean   OFF)
 
@@ -42,7 +46,7 @@ set (_library_already    "${_library_prefix}/lib/${_install_file_name}")
 set (_library_update)
 set (_library_autoconfig)
 set (_library_configure   ./configure "--prefix=${_library_prefix}" --static)
-set (_library_build       make CFLAGS=-fPIC)
+set (_library_build       make -j${_thread_count} CFLAGS=-fPIC)
 set (_library_install     make install)
 set (_library_test)
 
