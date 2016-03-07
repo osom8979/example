@@ -37,6 +37,6 @@ if (GLOG_FOUND)
     set (GLOG_INCLUDE_DIRS ${GLOG_INCLUDE_DIR})
     set (GLOG_LIBRARIES ${GLOG_LIBRARY})
     mark_as_advanced (${LOOKED_FOR})
-    message (STATUS "Found glog  (include: ${GLOG_INCLUDE_DIR}, library: ${GLOG_LIBRARY})")
+    message (STATUS "Found glog (include: ${GLOG_INCLUDE_DIR}, library: ${GLOG_LIBRARY})")
 endif ()
 

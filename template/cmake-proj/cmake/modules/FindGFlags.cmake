@@ -37,6 +37,6 @@ if (GFLAGS_FOUND)
     set (GFLAGS_INCLUDE_DIRS ${GFLAGS_INCLUDE_DIR})
     set (GFLAGS_LIBRARIES ${GFLAGS_LIBRARY})
     mark_as_advanced (${LOOKED_FOR})
-    message (STATUS "Found gflags  (include: ${GFLAGS_INCLUDE_DIR}, library: ${GFLAGS_LIBRARY})")
+    message (STATUS "Found gflags (include: ${GFLAGS_INCLUDE_DIR}, library: ${GFLAGS_LIBRARY})")
 endif ()
 
