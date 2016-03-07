@@ -57,11 +57,11 @@ endfunction ()
 #
 # \param _enable      [in] Enable variable.
 # \param _module_name [in] Module name.
-function (test_find_package _enable _module_name)
+macro (test_find_package _enable _module_name)
     if (USE_${_enable})
         find_package (${_module_name})
     endif ()
-endfunction ()
+endmacro ()
 
 ## ------------------
 ## String operations.

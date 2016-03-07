@@ -41,6 +41,7 @@ set (VERSION "${VERSION_MAJOR}.${VERSION_MINOR}.${VERSION_PATCH}")
 
 # Compiler extension.
 set (USE_CUDA       ON  CACHE BOOL "Use the nvidia-cuda.")
+set (USE_CUDNN      ON  CACHE BOOL "Use the cuDNN.")
 set (USE_OBFUSCATE  ON  CACHE BOOL "Use the obfuscate.")
 
 # Third-party libraries.
@@ -95,6 +96,9 @@ test_find_package  (boost     Boost)
 #test_find_package (ffmpeg    FFmpeg)
 test_find_package  (wxwidgets wxWidgets)
 #test_find_package (sdl2      SDL2)
+
+test_find_package (CUDA  CUDA)
+test_find_package (CUDNN CUDNN)
 
 # -------------------
 # Configure settings.
