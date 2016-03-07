@@ -158,7 +158,7 @@ function (run_custom_library)
     run_step (Test        _last_error_code "${_cmd_test}"        "${_work_dir}"  "${_log_path}")
 
     if (_clean)
-        message (">> Cleaning.")
+        message (">> Cleanup: ${_extract_dir}")
         file (REMOVE_RECURSE "${_extract_dir}")
     endif ()
 endfunction ()
