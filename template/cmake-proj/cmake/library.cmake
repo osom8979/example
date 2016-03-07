@@ -57,8 +57,8 @@ function (run_custom_library)
     cmake_parse_arguments (_RUN_CUSTOM_PROCESS_COMMAND
         "${_options}" "${_one_value_args}" "${_multi_value_args}" ${ARGN})
 
-    set (_verbose "${_RUN_CUSTOM_PROCESS_COMMAND_VERBOSE}")
-    set (_clean   "${_RUN_CUSTOM_PROCESS_COMMAND_CLEAN}")
+    set (_verbose ${_RUN_CUSTOM_PROCESS_COMMAND_VERBOSE})
+    set (_clean   ${_RUN_CUSTOM_PROCESS_COMMAND_CLEAN})
 
     set (_name      "${_RUN_CUSTOM_PROCESS_COMMAND_NAME}")
     set (_dir_name  "${_RUN_CUSTOM_PROCESS_COMMAND_DIR_NAME}")

@@ -46,7 +46,7 @@ set (_library_already    "${_library_prefix}/lib/${_install_file_name}")
 set (_library_update)
 set (_library_autoconfig)
 set (_library_configure   ${CMAKE_COMMAND} "-DCMAKE_INSTALL_PREFIX=${_library_prefix}" -G "Unix Makefiles" .)
-set (_library_build       make -j${_thread_count} CFLAGS=-fPIC)
+set (_library_build       make -j${_thread_count})
 set (_library_install     make install)
 set (_library_test)
 
