@@ -66,7 +66,15 @@ set (CMAKE_INSTALL_RPATH_USE_LINK_PATH TRUE)
 build_libraries ("${LIST_OF_LIBRARIES}" "${THIRD_PREFIX}")
 
 # Extension variables.
+set (ZLIB_ROOT  "${THIRD_PREFIX}")
 set (GTEST_ROOT "${THIRD_PREFIX}")
+
+# Test packages.
+set (TEST_FIND_PACKAGE ON)
+if  (TEST_FIND_PACKAGE)
+    find_package (ZLIB)
+    find_package (GTest)
+endif ()
 
 # -------------------
 # Configure settings.

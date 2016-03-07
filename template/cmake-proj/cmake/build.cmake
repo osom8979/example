@@ -96,7 +96,7 @@ endfunction ()
 function (default_build _libs _tests _exes)
     # Build project.
     foreach (_cursor ${_libs} ${_tests} ${_exes})
-        set (_project_is_verbose ON)
+        set (_project_is_verbose OFF)
         set (_project_objects)
         set (_project_libraries)
         set (_project_dependencies)
