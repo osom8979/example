@@ -66,15 +66,17 @@ set (CMAKE_INSTALL_RPATH_USE_LINK_PATH TRUE)
 build_libraries ("${LIST_OF_LIBRARIES}" "${THIRD_PREFIX}")
 
 # Extension variables.
-set (ZLIB_ROOT  "${THIRD_PREFIX}")
-set (GTEST_ROOT "${THIRD_PREFIX}")
-set (HDF5_ROOT  "${THIRD_PREFIX}")
+set (ZLIB_ROOT        "${THIRD_PREFIX}")
+set (GTEST_ROOT       "${THIRD_PREFIX}")
+set (GFLAGS_ROOT_DIR  "${THIRD_PREFIX}")
+set (GLOG_ROOT_DIR    "${THIRD_PREFIX}")
+set (HDF5_ROOT        "${THIRD_PREFIX}")
 
 # Test packages.
 test_find_package  (zlib      ZLIB)
 test_find_package  (gtest     GTest)
 test_find_package  (gflags    GFlags)
-#test_find_package (glog      GLog)
+test_find_package  (glog      GLog)
 test_find_package  (protobuf  Protobuf)
 #test_find_package (lmdb      LMDB)
 test_find_package  (hdf5      HDF5)

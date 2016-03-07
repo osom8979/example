@@ -1,4 +1,4 @@
-## Find the Google-gflags program.
+## Find the Google-gflags library.
 #
 # The following variables are optionally searched for defaults
 #  GFLAGS_ROOT_DIR
@@ -27,7 +27,6 @@ find_library (GFLAGS_LIBRARY
     NAMES ${_gflags_lib_name}
     PATHS ${GFLAGS_LIBRARY_SEARCH_PATHS}
     PATH_SUFFIXES Debug Release)
-
 
 set (LOOKED_FOR GFLAGS_INCLUDE_DIR GFLAGS_LIBRARY)
 
