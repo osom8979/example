@@ -99,6 +99,8 @@ test_find_package  (wxwidgets wxWidgets)
 
 test_find_package (CUDA  CUDA)
 test_find_package (CUDNN CUDNN)
+test_find_package (OBFUSCATE CxxObfuscator)
+
 
 # -------------------
 # Configure settings.
