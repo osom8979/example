@@ -36,7 +36,7 @@ set (_library_clean   OFF)
 set (_library_name       "protobuf")
 set (_library_dir_name   "${_library_name}-3.0.0-beta-2")
 set (_library_url        "https://codeload.github.com/google/protobuf/tar.gz/v3.0.0-beta-2")
-set (_library_md5        "")
+set (_library_md5        "e7f2602baffcbc27fb607de659cfbab6")
 set (_library_dest_name  "${_library_dir_name}.tar.gz")
 set (_library_work_name  "${_library_dir_name}")
 
