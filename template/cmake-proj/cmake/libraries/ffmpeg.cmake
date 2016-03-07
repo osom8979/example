@@ -1,73 +1,50 @@
-## CMake build script.
+## Library build properties.
 
-if (VERBOSE)
-    message (">> Library name: ffmpeg")
-    message (">> Working directory: ${WORKING_DIR}")
-    message (">> Install prefix: ${INSTALL_PREFIX}")
-    message (">> Include path: ${INCLUDE_PATH}")
-    message (">> Library path: ${LIBRARY_PATH}")
-    message (">> CMAKE_STATIC_LIBRARY_PREFIX: ${CMAKE_STATIC_LIBRARY_PREFIX}")
-    message (">> CMAKE_STATIC_LIBRARY_SUFFIX: ${CMAKE_STATIC_LIBRARY_SUFFIX}")
-    message (">> CMAKE_SHARED_LIBRARY_PREFIX: ${CMAKE_SHARED_LIBRARY_PREFIX}")
-    message (">> CMAKE_SHARED_LIBRARY_SUFFIX: ${CMAKE_SHARED_LIBRARY_SUFFIX}")
-    message (">> CMAKE_EXECUTABLE_SUFFIX: ${CMAKE_EXECUTABLE_SUFFIX}")
+if (_library_verbose)
+    message  (">> _library_name: ${_library_name}")
+    message  (">> _library_dir_name: ${_library_dir_name}")
+    message  (">> _library_url: ${_library_url}")
+    message  (">> _library_md5: ${_library_md5}")
+    message  (">> _library_temp_dir: ${_library_temp_dir}")
+    message  (">> _library_dest_name: ${_library_dest_name}")
+    message  (">> _library_work_name: ${_library_work_name}")
+    message  (">> _library_prefix: ${_library_prefix}")
+    message  (">> _library_already: ${_library_already}")
+
+    message  (">> _library_update: ${_library_update}")
+    message  (">> _library_autoconfig: ${_library_autoconfig}")
+    message  (">> _library_configure: ${_library_configure}")
+    message  (">> _library_build: ${_library_build}")
+    message  (">> _library_install: ${_library_install}")
+    message  (">> _library_test: ${_library_test}")
 endif ()
-
-set (_proj_name     "ffmpeg-3.0")
-set (_proj_url      "https://www.ffmpeg.org/releases/ffmpeg-3.0.tar.gz")
-set (_working       "${WORKING_DIR}")
-set (_prefix        "${INSTALL_PREFIX}")
-set (_include_path  "${INCLUDE_PATH}")
-set (_library_path  "${LIBRARY_PATH}")
-set (_download_file "${_working}/${_proj_name}.tar.gz")
-set (_build_dir     "${_working}/${_proj_name}")
-
-# exists library.
-set (_shared_lib_name  "${CMAKE_SHARED_LIBRARY_PREFIX}avcodec${CMAKE_SHARED_LIBRARY_SUFFIX}")
-set (_shared_lib       "${_prefix}/lib/${_shared_lib_name}")
-
-if (EXISTS ${_shared_lib})
-    message (">> Exists library: ${_shared_lib}")
-    return ()
-endif ()
-
-# download & build & install library.
 
 include (ProcessorCount)
 ProcessorCount (_process_count)
 math (EXPR _thread_count "${_process_count} * 2")
 
-if (NOT EXISTS "${_download_file}")
-    message (">> Download ${_proj_name}")
-    execute_process (
-        COMMAND curl -k -o "${_download_file}" "${_proj_url}"
-        WORKING_DIRECTORY "${_working}")
-endif ()
+# [WARNING] Don't change this code.
+#set (_library_temp_dir)
+#set (_library_prefix)
 
-if (NOT EXISTS "${_build_dir}")
-    message (">> Extract ${_proj_name}")
-    execute_process (
-        COMMAND tar xzf "${_download_file}"
-        WORKING_DIRECTORY "${_working}")
-endif ()
+set (_library_name       "ffmpeg")
+set (_library_dir_name   "${_library_name}-3.0")
+set (_library_url        "https://www.ffmpeg.org/releases/ffmpeg-3.0.tar.gz")
+set (_library_md5        "123af0b03e4b3819eaf3c1e4ae123d46")
+set (_library_dest_name  "${_library_dir_name}.tar.gz")
+set (_library_work_name  "${_library_dir_name}")
 
-message (">> Configure ${_proj_name}")
-execute_process (
-    COMMAND ./configure "--prefix=${_prefix}"
-                        --enable-shared --disable-static
-                        --disable-yasm
-                        --extra-cflags="-fPIC"
-    WORKING_DIRECTORY "${_build_dir}")
+set (_install_file_name  "${CMAKE_SHARED_LIBRARY_PREFIX}avcodec${CMAKE_SHARED_LIBRARY_SUFFIX}")
+set (_library_already    "${_library_prefix}/lib/${_install_file_name}")
 
-message (">> Build ${_proj_name}")
-execute_process (
-    COMMAND make -j${_thread_count}
-    WORKING_DIRECTORY "${_build_dir}")
-
-message (">> Install ${_proj_name}")
-execute_process (
-    COMMAND make install
-    WORKING_DIRECTORY "${_build_dir}")
-
-message (">> Done.")
+set (_library_update)
+set (_library_autoconfig)
+set (_library_configure  ./configure "--prefix=${_library_prefix}"
+                                     --enable-shared
+                                     --disable-static
+                                     --disable-yasm
+                                     --extra-cflags="-fPIC")
+set (_library_build      make -j${_thread_count})
+set (_library_install    make install)
+set (_library_test)
 

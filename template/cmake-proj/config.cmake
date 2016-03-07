@@ -33,11 +33,11 @@ add_library_value ("snappy"    ON  LIST_OF_LIBRARIES)
 add_library_value ("leveldb"   ON  LIST_OF_LIBRARIES)
 add_library_value ("libpng"    ON  LIST_OF_LIBRARIES)
 # Massive project:
-add_library_value ("boost"     OFF LIST_OF_LIBRARIES)
-add_library_value ("ffmpeg"    OFF LIST_OF_LIBRARIES)
-add_library_value ("wxwidgets" OFF LIST_OF_LIBRARIES)
-add_library_value ("opencv3"   OFF LIST_OF_LIBRARIES)
-add_library_value ("sdl2"      OFF LIST_OF_LIBRARIES)
+add_library_value ("boost"     ON  LIST_OF_LIBRARIES)
+add_library_value ("ffmpeg"    ON  LIST_OF_LIBRARIES)
+add_library_value ("wxwidgets" ON  LIST_OF_LIBRARIES)
+add_library_value ("sdl2"      ON  LIST_OF_LIBRARIES)
+add_library_value ("opencv3"   ON  LIST_OF_LIBRARIES)
 set (LIST_OF_LIBRARIES ${LIST_OF_LIBRARIES})
 
 # Main version.

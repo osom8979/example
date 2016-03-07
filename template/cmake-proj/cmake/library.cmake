@@ -87,8 +87,8 @@ function (run_custom_library)
     set (_cmd_download curl -k -o "${_dest_path}" "${_url}")
     set (_cmd_extract ${CMAKE_COMMAND} -E tar xf ${_dest_path})
 
-    message (">> Run ${_name} build script.")
-    message (">> Log file prefix: ${_log_path}")
+    #message (">> Run ${_name} build script.")
+    #message (">> Log file prefix: ${_log_path}")
 
     # Check install.
     if (EXISTS "${_already}")
@@ -117,25 +117,33 @@ function (run_custom_library)
         message (">> Not found downloaded file: ${_dest_path}")
     endif ()
 
+    # Create working directories.
+    if (NOT EXISTS "${_temp_dir}")
+        file (MAKE_DIRECTORY ${_temp_dir})
+    endif ()
+    if (NOT EXISTS "${_work_dir}")
+        file (MAKE_DIRECTORY ${_work_dir})
+    endif ()
+
     # Download file.
     if (_is_downloaded)
         message (">> Skip download: ${_url}")
     else ()
         file (REMOVE "${_dest_path}")
         run_step (Download _last_error_code "${_cmd_download}" "${_temp_dir}" "${_log_path}")
-    endif ()
 
-    # Check MD5 hash.
-    if (NOT ("${_md5}" STREQUAL ""))
-        file (MD5 "${_dest_path}" _dest_md5)
-        if ("${_md5}" STREQUAL "${_dest_md5}")
-            message (">> MD5 check true. (${_md5})")
+        # Check MD5 hash.
+        if (NOT ("${_md5}" STREQUAL ""))
+            file (MD5 "${_dest_path}" _dest_md5)
+            if ("${_md5}" STREQUAL "${_dest_md5}")
+                message (">> MD5 check true. (${_md5})")
+            else ()
+                message (WARNING ">> MD5 check false. (${_md5} != ${_dest_md5})")
+                return ()
+            endif ()
         else ()
-            message (WARNING ">> MD5 check false. (${_md5} != ${_dest_md5})")
-            return ()
+            message (">> Skip MD5 checksum.")
         endif ()
-    else ()
-        message (">> Skip MD5 checksum.")
     endif ()
 
     # Extract downloaded file.
@@ -184,6 +192,8 @@ function (build_libraries _lib_list _prefix)
         if (USE_${_cursor})
             if (EXISTS "${_script_path}")
                 message ("** Use the ${_cursor} library.")
+
+                set (_library_verbose OFF)
 
                 set (_library_name      "NAME")
                 set (_library_dir_name  "NAME-VERSION")
