@@ -1,13 +1,6 @@
-
-set (_proj_name     "leveldb-1.18")
-set (_proj_url      "https://codeload.github.com/google/leveldb/tar.gz/v1.18")
-
 ## Library build properties.
 
 if (_library_verbose)
-    #message (">> _library_verbose: ${_library_verbose}")
-    message  (">> _library_clean: ${_library_clean}")
-
     message  (">> _library_name: ${_library_name}")
     message  (">> _library_dir_name: ${_library_dir_name}")
     message  (">> _library_url: ${_library_url}")
@@ -29,9 +22,6 @@ endif ()
 include (ProcessorCount)
 ProcessorCount (_process_count)
 math (EXPR _thread_count "${_process_count} * 2")
-
-set (_library_verbose OFF)
-set (_library_clean   OFF)
 
 # [WARNING] Don't change this code.
 #set (_library_temp_dir)

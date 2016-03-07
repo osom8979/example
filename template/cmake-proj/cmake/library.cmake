@@ -185,9 +185,6 @@ function (build_libraries _lib_list _prefix)
             if (EXISTS "${_script_path}")
                 message ("** Use the ${_cursor} library.")
 
-                set (_library_verbose OFF)
-                set (_library_clean   OFF)
-
                 set (_library_name      "NAME")
                 set (_library_dir_name  "NAME-VERSION")
                 set (_library_url       "Download url")
@@ -208,8 +205,8 @@ function (build_libraries _lib_list _prefix)
                 include ("${_script_path}")
 
                 run_custom_library (
-                    VERBOSE     ${_library_verbose}
-                    CLEAN       ${_library_clean}
+                    #VERBOSE
+                    #CLEAN
                     NAME        ${_library_name}
                     DIR_NAME    ${_library_dir_name}
                     URL         ${_library_url}
