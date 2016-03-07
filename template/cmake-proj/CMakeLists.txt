@@ -73,7 +73,7 @@ set (HDF5_ROOT  "${THIRD_PREFIX}")
 # Test packages.
 test_find_package  (zlib      ZLIB)
 test_find_package  (gtest     GTest)
-#test_find_package (gflags    GFlags)
+test_find_package  (gflags    GFlags)
 #test_find_package (glog      GLog)
 test_find_package  (protobuf  Protobuf)
 #test_find_package (lmdb      LMDB)
