@@ -27,7 +27,7 @@ list (APPEND CMAKE_MODULE_PATH "${PROJECT_SOURCE_DIR}/cmake/modules")
 include (config.cmake)
 
 # CMake extension script.
-include (cmake/3rd.cmake)
+include (cmake/library.cmake)
 include (cmake/compile.cmake)
 include (cmake/build.cmake)
 include (cmake/util.cmake)
@@ -63,7 +63,7 @@ set (CMAKE_INSTALL_RPATH_USE_LINK_PATH TRUE)
 
 # [WARNING] Don't move this code.
 # Download & Build, third-party project.
-build_3rd ("${LIST_OF_LIBRARIES}" "${THIRD_PREFIX}")
+build_libraries ("${LIST_OF_LIBRARIES}" "${THIRD_PREFIX}")
 
 # Extension variables.
 set (GTEST_ROOT "${THIRD_PREFIX}")
