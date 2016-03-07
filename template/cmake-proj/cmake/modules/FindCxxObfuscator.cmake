@@ -11,7 +11,8 @@ set (CXX_OBFUSCATOR_SEARCH_PATHS
     "/usr/bin"
     "/usr/local/bin"
     "/Applications/Run\ C++\ Obfuscator.app/Contents/Resources/bin/"
-    "$ENV{CXX_OBFUSCATOR_ROOT_DIR}")
+    "$ENV{CXX_OBFUSCATOR_ROOT_DIR}"
+    "$ENV{CXX_OBFUSCATOR_ROOT_DIR}/bin")
 
 find_program (CXX_OBFUSCATOR_COMPILER NAMES "cxx-obfus" PATHS ${CXX_OBFUSCATOR_SEARCH_PATHS})
 
@@ -25,8 +26,11 @@ if (CXX_OBFUSCATOR_FOUND)
     message (STATUS "Found C++ Obfuscator (Compiler: ${CXX_OBFUSCATOR_COMPILER})")
 endif ()
 
+# ----------------
+# Module function.
+# ----------------
 
-#! bug fix version of protobuf_generate_cpp function.
+#! Generate obfuscated c/c++ source file.
 #
 # \param _obfus       [out] value name of result Obfuscated source files.
 # \param _sources     [in]  original source files.
