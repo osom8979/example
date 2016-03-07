@@ -55,6 +55,7 @@ message (">> Configure ${_proj_name}")
 execute_process (
     COMMAND ./configure "--prefix=${_prefix}"
                         --enable-shared --disable-static
+                        --disable-yasm
                         --extra-cflags="-fPIC"
     WORKING_DIRECTORY "${_build_dir}")
 
