@@ -29,7 +29,7 @@ add_library_value ("lmdb"      OFF  LIST_OF_LIBRARIES)
 add_library_value ("hdf5"      OFF  LIST_OF_LIBRARIES)
 add_library_value ("openblas"  OFF  LIST_OF_LIBRARIES)
 add_library_value ("libuv"     OFF  LIST_OF_LIBRARIES)
-add_library_value ("snappy"    OFF  LIST_OF_LIBRARIES)
+add_library_value ("snappy"    ON   LIST_OF_LIBRARIES)
 add_library_value ("leveldb"   OFF  LIST_OF_LIBRARIES)
 add_library_value ("libpng"    OFF  LIST_OF_LIBRARIES)
 # Massive project:
