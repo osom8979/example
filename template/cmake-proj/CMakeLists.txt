@@ -68,11 +68,25 @@ build_libraries ("${LIST_OF_LIBRARIES}" "${THIRD_PREFIX}")
 # Extension variables.
 set (ZLIB_ROOT  "${THIRD_PREFIX}")
 set (GTEST_ROOT "${THIRD_PREFIX}")
+set (HDF5_ROOT  "${THIRD_PREFIX}")
 
 # Test packages.
-test_find_package (zlib      ZLIB)
-test_find_package (protobuf  Protobuf)
-test_find_package (gtest     GTest)
+test_find_package  (zlib      ZLIB)
+test_find_package  (gtest     GTest)
+#test_find_package (gflags    GFlags)
+#test_find_package (glog      GLog)
+test_find_package  (protobuf  Protobuf)
+#test_find_package (lmdb      LMDB)
+test_find_package  (hdf5      HDF5)
+#test_find_package (openblas  OpenBLAS)
+#test_find_package (libuv     UV)
+#test_find_package (snappy    Snappy)
+#test_find_package (leveldb   LevelDB)
+test_find_package  (libpng    PNG)
+test_find_package  (boost     Boost)
+#test_find_package (ffmpeg    FFmpeg)
+test_find_package  (wxwidgets wxWidgets)
+#test_find_package (sdl2      SDL2)
 
 # -------------------
 # Configure settings.
