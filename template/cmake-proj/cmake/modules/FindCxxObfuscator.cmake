@@ -1,7 +1,7 @@
 ## Find the C++ Obfuscator program.
 #
 # The following variables are optionally searched for defaults
-#  CXX_OBFUSCATOR_ROOT_DIR
+#  CXX_OBFUSCATOR_ROOT
 #
 # The following are set after configuration is done:
 #  CXX_OBFUSCATOR_FOUND
@@ -11,10 +11,14 @@ set (CXX_OBFUSCATOR_SEARCH_PATHS
     "/usr/bin"
     "/usr/local/bin"
     "/Applications/Run\ C++\ Obfuscator.app/Contents/Resources/bin/"
-    "$ENV{CXX_OBFUSCATOR_ROOT_DIR}"
-    "$ENV{CXX_OBFUSCATOR_ROOT_DIR}/bin")
+    "${CXX_OBFUSCATOR_ROOT}"
+    "${CXX_OBFUSCATOR_ROOT}/bin"
+    "$ENV{CXX_OBFUSCATOR_ROOT}"
+    "$ENV{CXX_OBFUSCATOR_ROOT}/bin")
 
-find_program (CXX_OBFUSCATOR_COMPILER NAMES "cxx-obfus" PATHS ${CXX_OBFUSCATOR_SEARCH_PATHS})
+find_program (CXX_OBFUSCATOR_COMPILER
+    NAMES "cxx-obfus"
+    PATHS ${CXX_OBFUSCATOR_SEARCH_PATHS})
 
 set (LOOKED_FOR CXX_OBFUSCATOR_COMPILER)
 
@@ -25,6 +29,7 @@ if (CXX_OBFUSCATOR_FOUND)
     mark_as_advanced (${LOOKED_FOR})
     message (STATUS "Found C++ Obfuscator (Compiler: ${CXX_OBFUSCATOR_COMPILER})")
 endif ()
+
 
 # ----------------
 # Module function.

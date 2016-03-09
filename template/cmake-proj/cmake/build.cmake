@@ -117,7 +117,7 @@ function (default_build _libs _tests _exes)
         if ("${_project_type}" STREQUAL "${BUILD_PROJECT_TYPE_TEST}")
             find_package (GTest)
             if (GTEST_FOUND)
-                list (APPEND _project_libraries "${GTEST_BOTH_LIBRARIES}")
+                list (APPEND _project_libraries "${GTEST_BOTH_LIBRARIES}" "-lpthread")
             endif ()
         endif ()
 
