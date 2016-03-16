@@ -9,7 +9,7 @@
 #  CUDNN_LIBRARIES
 
 if (NOT CUDA_FOUND)
-    message (WARNING "Find cuDNN: Not found CUDA.")
+    message ("** Find cuDNN: Not found CUDA.")
     return ()
 endif ()
 

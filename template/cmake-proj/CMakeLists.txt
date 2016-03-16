@@ -38,11 +38,6 @@ string (TIMESTAMP _timestamp "%Y-%m-%d_%H%M%S")
 set (VERSION_TWEAK "${_timestamp}")
 set (VERSION "${VERSION_MAJOR}.${VERSION_MINOR}.${VERSION_PATCH}")
 
-# Compiler extension.
-set (USE_CUDA       ON  CACHE BOOL "Use the nvidia-cuda.")
-set (USE_CUDNN      ON  CACHE BOOL "Use the cuDNN.")
-set (USE_OBFUSCATE  ON  CACHE BOOL "Use the obfuscate.")
-
 # Third-party libraries.
 set (THIRD_PREFIX  "${PROJECT_SOURCE_DIR}/3rd")
 set (THIRD_BIN     "${THIRD_PREFIX}/bin")
@@ -104,7 +99,6 @@ test_find_package  (wxwidgets wxWidgets)
 test_find_package (CUDA  CUDA)
 test_find_package (CUDNN CUDNN)
 test_find_package (OBFUSCATE CxxObfuscator)
-
 
 # -------------------
 # Configure settings.

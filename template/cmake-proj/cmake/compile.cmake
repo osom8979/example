@@ -100,9 +100,6 @@ function (find_compile_object _objs _libs _find_dir)
 
     # C++ Obfuscator or Native C/C++ Source files.
     set (_obfus_excepted_path "${CMAKE_CURRENT_SOURCE_DIR}/excepted.obfus")
-    if (USE_OBFUSCATE)
-        find_package (CxxObfuscator)
-    endif ()
     if (USE_OBFUSCATE AND CXX_OBFUSCATOR_FOUND AND (EXISTS "${_obfus_excepted_path}"))
         obfus_generate_cpp (_find_obfus "${_find_srcs}" "${_obfus_excepted_path}")
         list (APPEND ${_objs} ${_find_obfus})
@@ -111,10 +108,7 @@ function (find_compile_object _objs _libs _find_dir)
     endif ()
 
     # Google-protocol-buffers files.
-    if (USE_PROTOBUF)
-        find_package (Protobuf)
-    endif ()
-    if (USE_PROTOBUF AND PROTOBUF_FOUND)
+    if (USE_protobuf AND PROTOBUF_FOUND)
         file (GLOB_RECURSE _find_protos "${_absolute}/*${_proto_suffix}")
         list (LENGTH _find_protos _find_protos_length)
         if (${_find_protos_length} GREATER 0)
@@ -127,9 +121,6 @@ function (find_compile_object _objs _libs _find_dir)
     endif ()
 
     # NVIDIA CUDA files.
-    if (USE_CUDA)
-        find_package (CUDA)
-    endif ()
     if (USE_CUDA AND CUDA_FOUND)
         file (GLOB_RECURSE _find_cudas "${_absolute}/*${_cuda_suffix}")
         list (LENGTH _find_cudas _find_cudas_length)

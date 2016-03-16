@@ -46,6 +46,11 @@ add_library_value ("sdl2"      OFF  LIST_OF_LIBRARIES)
 add_library_value ("opencv3"   OFF  LIST_OF_LIBRARIES)
 set (LIST_OF_LIBRARIES ${LIST_OF_LIBRARIES})
 
+# Compiler extension.
+set (USE_CUDA       ON  CACHE BOOL "Use the nvidia-cuda.")
+set (USE_CUDNN      ON  CACHE BOOL "Use the cuDNN.")
+set (USE_OBFUSCATE  ON  CACHE BOOL "Use the obfuscate.")
+
 # Main version.
 set (VERSION_MAJOR  0)
 set (VERSION_MINOR  0)
