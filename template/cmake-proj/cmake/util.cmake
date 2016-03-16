@@ -44,7 +44,7 @@ endfunction ()
 #
 # \param _value [in] check value name.
 function (exists_define_or_die _value)
-    if (NOT DEFINED ${_value} OR ${_value} STREQUAL "")
+    if (NOT DEFINED ${_value})
         message (FATAL_ERROR "Not defined ${_value} variable.")
     endif()
 endfunction ()

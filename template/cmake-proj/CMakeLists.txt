@@ -33,7 +33,6 @@ include (cmake/build.cmake)
 include (cmake/util.cmake)
 
 exists_define_or_die (MAIN_NAME)
-exists_define_or_die (LIST_OF_LIBRARIES)
 
 string (TIMESTAMP _timestamp "%Y-%m-%d_%H%M%S")
 set (VERSION_TWEAK "${_timestamp}")
@@ -64,7 +63,12 @@ set (CMAKE_INSTALL_RPATH_USE_LINK_PATH TRUE)
 
 # [WARNING] Don't move this code.
 # Download & Build, third-party project.
-build_libraries ("${LIST_OF_LIBRARIES}" "${THIRD_PREFIX}")
+list (LENGTH LIST_OF_LIBRARIES LIST_OF_LIBRARIES_LENGTH)
+if (LIST_OF_LIBRARIES_LENGTH GREATER 0)
+    build_libraries ("${LIST_OF_LIBRARIES}" "${THIRD_PREFIX}")
+else ()
+    message ("** Not found third-party libraries.")
+endif ()
 
 # Extension variables.
 set (ZLIB_ROOT     "${THIRD_PREFIX}")
