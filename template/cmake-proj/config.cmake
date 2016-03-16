@@ -17,7 +17,7 @@ endmacro ()
 # --------------------
 
 # Information.
-set (MAIN_NAME   "main"    CACHE STRING  "Solution name string.")
+set (MAIN_NAME   "libmain" CACHE STRING  "Solution name string.")
 set (MAIN_AUTHOR "author"  CACHE STRING  "Solution author.")
 set (MAIN_EMAIL  "email"   CACHE STRING  "Author E-mail address.")
 set (MAIN_BRIEF  "brief"   CACHE STRING  "Solution brief string.")
