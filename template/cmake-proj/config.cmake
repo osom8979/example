@@ -51,6 +51,9 @@ set (USE_CUDA       ON  CACHE BOOL "Use the nvidia-cuda.")
 set (USE_CUDNN      ON  CACHE BOOL "Use the cuDNN.")
 set (USE_OBFUSCATE  ON  CACHE BOOL "Use the obfuscate.")
 
+# Continuous Integration.
+option (USE_DOXYGEN "API documentation." ON)
+
 # Main version.
 set (VERSION_MAJOR  0)
 set (VERSION_MINOR  0)

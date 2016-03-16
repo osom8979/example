@@ -270,19 +270,19 @@ PROJECT_BRIEF           = "${MAIN_BRIEF}"
 OUTPUT_LANGUAGE         = Korean-en
 ALIASES                 = translate{2}="<dl class='section remarks'><dt>Translate-\1</dt><dd>\2</dd></dl>"
 WARN_IF_UNDOCUMENTED    = NO
-INPUT                   = src
+INPUT                   = .
 FILE_PATTERNS           = *.c *.cc *.cxx *.cpp *.c++ *.d *.java *.ii *.ixx *.ipp *.i++ \
                           *.inl *.h *.hh *.hxx *.hpp *.h++  *.idl *.odl *.cs *.php *.php3 \
                           *.inc *.m *.markdown *.md *.mm *.dox *.py *.f90  *.f *.for *.vhd *.vhdl
 RECURSIVE               = YES
-EXCLUDE_PATTERNS        = *3rd/*
+EXCLUDE_PATTERNS        = *3rd/* *build/*
 HTML_TIMESTAMP          = YES
 HTML_OUTPUT             = .html
 GENERATE_LATEX          = NO
 LATEX_OUTPUT            = .latex
 RTF_SOURCE_CODE         = NO
 MACRO_EXPANSION         = YES
-INCLUDE_PATH            = src
+INCLUDE_PATH            = .
 INCLUDE_FILE_PATTERNS   = *.h *.hh *.hxx *.hpp *.h++
 USE_MATHJAX             = YES
 MATHJAX_RELPATH         = https://cdn.mathjax.org/mathjax/latest/MathJax.js?config=TeX-AMS-MML_HTMLorMML

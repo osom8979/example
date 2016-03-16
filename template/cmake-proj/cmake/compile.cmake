@@ -14,6 +14,17 @@ macro (insert_whole_archive_flags _value)
     endif ()
 endmacro ()
 
+#! Use Doxygen to create the HTML based API documentation.
+#
+# \param _config [in] Doxyfile path.
+function (doxygen_generate _config)
+    if (USE_DOXYGEN AND DOXYGEN_FOUND)
+        add_custom_target (doc ALL
+            ${DOXYGEN_EXECUTABLE} "${_config}"
+            WORKING_DIRECTORY "${CMAKE_CURRENT_SOURCE_DIR}")
+    endif ()
+endfunction ()
+
 #! bug fix version of protobuf_generate_cpp function.
 #
 # \param _sources [out] value name of result source files.

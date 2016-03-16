@@ -96,9 +96,13 @@ test_find_package  (boost     Boost)
 test_find_package  (wxwidgets wxWidgets)
 #test_find_package (sdl2      SDL2)
 
-test_find_package (CUDA  CUDA)
-test_find_package (CUDNN CUDNN)
+# Compiler extension.
+test_find_package (CUDA      CUDA)
+test_find_package (CUDNN     CUDNN)
 test_find_package (OBFUSCATE CxxObfuscator)
+
+# Continuous Integration.
+test_find_package (DOXYGEN Doxygen)
 
 # -------------------
 # Configure settings.
@@ -146,6 +150,12 @@ message ("** Find test project: ${_test_proj_list}")
 message ("** Find executable project: ${_exe_proj_list}")
 
 default_build ("${_lib_proj_list}" "${_test_proj_list}" "${_exe_proj_list}")
+
+# -----------------------
+# Continuous Integration.
+# -----------------------
+
+doxygen_generate ("${OUT_DOXYFILE}")
 
 #print_os ()
 #print_compiler_id ()
