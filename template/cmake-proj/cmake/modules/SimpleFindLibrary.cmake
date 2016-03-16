@@ -1,6 +1,6 @@
-## Find library macro.
+## Find library module.
 
-#! Find {Library} macro.
+#! Find {Library} function.
 #
 # The following variables are optionally searched for defaults.
 #  ${_prefix}_ROOT
@@ -15,7 +15,7 @@
 # \param _prefix  [in] Variable result prefix.
 # \param _headers [in] Find header files.
 # \param _libs    [in] Find library files.
-macro (simple_find_library _prefix  _headers _libs)
+function (simple_find_library _prefix  _headers _libs)
 
     set (_root_dir           "${_prefix}_ROOT")
     set (_root_include_paths "${_prefix}_ROOT_INCLUDE_PATHS")
@@ -47,26 +47,28 @@ macro (simple_find_library _prefix  _headers _libs)
                                ${_root_library_paths}
                                ${_lib64_paths})
 
-    find_path (_looked_for_include_dir
+    find_path (${_prefix}_INCLUDE_DIRS
         NAMES ${_headers}
         PATHS ${_search_include_paths})
 
-    find_library (_looked_for_library
+    find_library (${_prefix}_LIBRARIES
         NAMES ${_libs}
         PATHS ${_search_library_paths}
         PATH_SUFFIXES Debug Release)
 
-    set (LOOKED_FOR _looked_for_library _looked_for_include_dir)
+    set (LOOKED_FOR
+        ${_prefix}_LIBRARIES
+        ${_prefix}_INCLUDE_DIRS)
 
     include (FindPackageHandleStandardArgs)
     find_package_handle_standard_args (${_prefix} DEFAULT_MSG ${LOOKED_FOR})
 
     if (${_prefix}_FOUND)
-        set (${_prefix}_INCLUDE_DIRS ${_looked_for_include_dir})
-        set (${_prefix}_LIBRARIES    ${_looked_for_library})
         mark_as_advanced (${LOOKED_FOR})
-        # message (STATUS "Found ${_prefix} (include: ${_looked_for_include_dir}, library: ${_looked_for_library})")
     endif ()
 
-endmacro ()
+    set (${_prefix}_FOUND        ${${_prefix}_FOUND}        PARENT_SCOPE)
+    set (${_prefix}_INCLUDE_DIRS ${${_prefix}_INCLUDE_DIRS} PARENT_SCOPE)
+    set (${_prefix}_LIBRARIES    ${${_prefix}_LIBRARIES}    PARENT_SCOPE)
+endfunction ()
 
