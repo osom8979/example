@@ -37,10 +37,25 @@ set (_library_work_name  "${_library_dir_name}")
 set (_install_file_name  "${CMAKE_STATIC_LIBRARY_PREFIX}z${CMAKE_STATIC_LIBRARY_SUFFIX}")
 set (_library_already    "${_library_prefix}/lib/${_install_file_name}")
 
-set (_library_update)
-set (_library_autoconfig)
-set (_library_configure   ./configure "--prefix=${_library_prefix}" --static)
-set (_library_build       make -j${_thread_count} CFLAGS=-fPIC)
-set (_library_install     make install)
-set (_library_test)
+set (_library_update)      # SKIP
+set (_library_autoconfig)  # SKIP
+set (_library_test)        # SKIP
+
+if (WIN32 AND MINGW)
+    set (_library_configure) # SKIP
+    set (_library_build    make all -f win32/Makefile.gcc CFLAGS=-fPIC)
+    set (_library_install  make install
+                                -f win32/Makefile.gcc
+                                SHARED_MODE=0
+                                BINARY_PATH=${_library_prefix}/bin
+                                INCLUDE_PATH=${_library_prefix}/include
+                                LIBRARY_PATH=${_library_prefix}/lib)
+    # To use the asm code, type:
+    #   cp contrib/asm?86/match.S ./match.S
+    #   make LOC=-DASMV OBJA=match.o -fwin32/Makefile.gcc
+else ()
+    set (_library_configure  ./configure "--prefix=${_library_prefix}" --static)
+    set (_library_build      make -j${_thread_count} CFLAGS=-fPIC)
+    set (_library_install    make install)
+endif ()
 
