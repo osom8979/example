@@ -1,0 +1,8 @@
+.git
+.gitignore
+.gitattributes
+.idea
+3rd
+build
+docker
+

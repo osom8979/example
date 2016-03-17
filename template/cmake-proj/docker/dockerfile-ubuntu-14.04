@@ -1,0 +1,30 @@
+FROM ubuntu:14.04
+MAINTAINER zer0 <osom8979@gmail.com>
+
+RUN apt-get update
+RUN apt-get install -y build-essential
+RUN apt-get install -y autoconf
+RUN apt-get install -y automake
+RUN apt-get install -y libtool
+RUN apt-get install -y pkg-config
+RUN apt-get install -y texinfo
+
+RUN apt-get install -y curl
+RUN apt-get install -y git
+RUN apt-get install -y cmake
+
+ENV WORKING_DIR /working
+ENV BUILD_DIR   /build
+
+RUN mkdir $WORKING_DIR
+RUN mkdir $BUILD_DIR
+
+COPY . $WORKING_DIR
+WORKDIR $BUILD_DIR
+
+RUN cmake -G "Unix Makefiles" $WORKING_DIR
+RUN make
+
+#CMD ["/bin/bash"]
+CMD ./tester
+
