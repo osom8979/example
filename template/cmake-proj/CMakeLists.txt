@@ -27,7 +27,6 @@ list (APPEND CMAKE_MODULE_PATH "${PROJECT_SOURCE_DIR}/cmake/modules")
 include (config.cmake)
 
 # CMake extension script.
-include (cmake/library.cmake)
 include (cmake/compile.cmake)
 include (cmake/build.cmake)
 include (cmake/util.cmake)
@@ -39,7 +38,7 @@ set (VERSION_TWEAK "${_timestamp}")
 set (VERSION "${VERSION_MAJOR}.${VERSION_MINOR}.${VERSION_PATCH}")
 
 # Third-party libraries.
-set (THIRD_PREFIX  "${PROJECT_SOURCE_DIR}/3rd")
+set (THIRD_PREFIX  "${PROJECT_SOURCE_DIR}/tparty/local")
 set (THIRD_BIN     "${THIRD_PREFIX}/bin")
 set (THIRD_INC     "${THIRD_PREFIX}/include")
 set (THIRD_LIB     "${THIRD_PREFIX}/lib")
@@ -55,15 +54,6 @@ list (INSERT CMAKE_LIBRARY_PATH 0 "${PROJECT_SOURCE_DIR}")
 
 set (CMAKE_INSTALL_RPATH "." "${THIRD_LIB}")
 set (CMAKE_INSTALL_RPATH_USE_LINK_PATH TRUE)
-
-# [WARNING] Don't move this code.
-# Download & Build, third-party project.
-list (LENGTH LIST_OF_LIBRARIES LIST_OF_LIBRARIES_LENGTH)
-if (LIST_OF_LIBRARIES_LENGTH GREATER 0)
-    build_libraries ("${LIST_OF_LIBRARIES}" "${THIRD_PREFIX}")
-else ()
-    message ("** Not found third-party libraries.")
-endif ()
 
 # Extension variables.
 set (ZLIB_ROOT     "${THIRD_PREFIX}")
