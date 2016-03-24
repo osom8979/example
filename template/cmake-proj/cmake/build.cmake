@@ -169,6 +169,16 @@ function (default_build _libs _tests _exes)
         if (${_project_ldflags_length} GREATER 0)
             target_link_libraries (${_project_name} PRIVATE ${_project_ldflags})
         endif ()
+
+        # ----------------
+        # Insatll setting.
+        install (TARGETS ${_project_name}
+                 RUNTIME DESTINATION bin
+                 LIBRARY DESTINATION lib
+                 ARCHIVE DESTINATION lib)
+        install (DIRECTORY ${_project_dir}
+                 DESTINATION "include"
+                 FILES_MATCHING REGEX ".*\\.[Hh]([Pp][Pp]|[Xx][Xx])?")
     endforeach ()
 endfunction ()
 
