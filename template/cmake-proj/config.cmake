@@ -48,7 +48,7 @@ set (USE_OBFUSCATE  ON  CACHE BOOL "Use the obfuscate.")
 option (USE_DOXYGEN "API documentation." ON)
 
 # 3rd-party library prefix.
-set (THIRD_PREFIX "$ENV{TPARTY_HOME}" CACHE STRING "3rd-party library prefix")
+set (THIRD_PREFIX "$ENV{TPARTY_HOME}/local" CACHE STRING "3rd-party library prefix")
 
 # Main version.
 set (VERSION_MAJOR  0)

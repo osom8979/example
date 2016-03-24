@@ -99,15 +99,16 @@ function (default_build _libs _tests _exes)
         set (_project_is_verbose OFF)
         set (_project_objects)
         set (_project_libraries)
+
         set (_project_dependencies)
-        set (_project_cflags)
+        set (_project_definitions)
+        set (_project_include_dirs)
         set (_project_cxxflags)
         set (_project_ldflags)
 
         set (_project_dir ${_cursor})
         get_project_type (_project_type "${_cursor}")
         get_project_name (_project_name "${_project_type}" "${_cursor}")
-
         project (${_project_name})
 
         # Compile files.
@@ -121,10 +122,9 @@ function (default_build _libs _tests _exes)
             endif ()
         endif ()
 
-
+        # ----------------------------------
         # User defined sub-project settings.
         include ("${PROJECT_SOURCE_DIR}/${_project_dir}/${BUILD_PROJECT_FILE_NAME}")
-
 
         # -------------------------------
         # Register library or executable.
@@ -145,11 +145,29 @@ function (default_build _libs _tests _exes)
             add_dependencies (${_project_name} ${_project_dependencies})
         endif ()
 
-        # Libraries setting.
-        set (_project_total_libs ${_project_dependencies} ${_project_libraries})
-        list (LENGTH _project_total_libs _project_total_libs_length)
-        if (${_project_total_libs_length} GREATER 0)
-            target_link_libraries (${_project_name} ${_project_total_libs})
+        # Define setting.
+        list (LENGTH _project_definitions _project_definitions_length)
+        if (${_project_definitions_length} GREATER 0)
+            target_compile_definitions (${_project_name} PRIVATE ${_project_definitions})
+        endif ()
+
+        # Include setting.
+        list (LENGTH _project_include_dirs _project_include_dirs_length)
+        if (${_project_include_dirs_length} GREATER 0)
+            target_include_directories (${_project_name} PRIVATE ${_project_include_dirs})
+        endif ()
+
+        # Compile options.
+        list (LENGTH _project_cxxflags _project_cxxflags_length)
+        if (${_project_cxxflags_length} GREATER 0)
+            target_compile_options (${_project_name} PRIVATE ${_project_cxxflags})
+        endif ()
+
+        # Linker options.
+        list (APPEND _project_ldflags ${_project_dependencies} ${_project_libraries})
+        list (LENGTH _project_ldflags _project_ldflags_length)
+        if (${_project_ldflags_length} GREATER 0)
+            target_link_libraries (${_project_name} PRIVATE ${_project_ldflags})
         endif ()
     endforeach ()
 endfunction ()

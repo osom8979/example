@@ -14,12 +14,18 @@ set (_CMAKE_BUILD_TYPE_RELEASE         "Release")
 set (_CMAKE_BUILD_TYPE_RELWITHDEBINFO  "RelWithDebInfo")
 set (_CMAKE_BUILD_TYPE_MINSIZEREL      "MinSizeRel")
 
- set (CMAKE_MACOSX_RPATH 1) # CMP0042
+set (CMAKE_MACOSX_RPATH  1) # CMP0042
+
 #set (CMAKE_VERBOSE_MAKEFILE ON)
- set (CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -fPIC -Wall")
- set (BUILD_SHARED_LIBS ON)
+ set (BUILD_SHARED_LIBS      ON)
+
 #set (CMAKE_BUILD_TYPE "Debug")
 #set (CMAKE_BUILD_TYPE "Release")
+
+ set (CMAKE_CXX_FLAGS           "${CMAKE_CXX_FLAGS} -fPIC -Wall")
+#set (CMAKE_EXE_LINKER_FLAGS    "${CMAKE_EXE_LINKER_FLAGS}")
+#set (CMAKE_MODULE_LINKER_FLAGS "${CMAKE_MODULE_LINKER_FLAGS}")
+#set (CMAKE_SHARED_LINKER_FLAGS "${CMAKE_SHARED_LINKER_FLAGS}")
 
 list (APPEND CMAKE_MODULE_PATH "${PROJECT_SOURCE_DIR}/cmake/modules")
 
@@ -42,9 +48,15 @@ set (THIRD_BIN "${THIRD_PREFIX}/bin")
 set (THIRD_INC "${THIRD_PREFIX}/include")
 set (THIRD_LIB "${THIRD_PREFIX}/lib")
 
-set (ENV{PATH}         "${THIRD_BIN}${PATH_SEPARATOR}$ENV{PATH}")
-set (ENV{CPATH}        "${THIRD_INC}${PATH_SEPARATOR}$ENV{CPATH}")
-set (ENV{LIBRARY_PATH} "${THIRD_LIB}${PATH_SEPARATOR}$ENV{LIBRARY_PATH}")
+if (IS_DIRECTORY ${THIRD_BIN})
+    set (ENV{PATH} "${THIRD_BIN}${PATH_SEPARATOR}$ENV{PATH}")
+endif ()
+if (IS_DIRECTORY ${THIRD_INC})
+    set (ENV{CPATH} "${THIRD_INC}${PATH_SEPARATOR}$ENV{CPATH}")
+endif ()
+if (IS_DIRECTORY ${THIRD_LIB})
+    set (ENV{LIBRARY_PATH} "${THIRD_LIB}${PATH_SEPARATOR}$ENV{LIBRARY_PATH}")
+endif ()
 
 list (INSERT CMAKE_PROGRAM_PATH 0 "${THIRD_BIN}")
 list (INSERT CMAKE_LIBRARY_PATH 0 "${THIRD_LIB}")
@@ -123,12 +135,14 @@ else ()
 endif ()
 
 include_directories (${PROJECT_SOURCE_DIR})
-include_directories (${THIRD_INC})
-include_directories (.)
+if (IS_DIRECTORY ${THIRD_INC})
+    include_directories (${THIRD_INC})
+endif ()
 
 link_directories (${PROJECT_SOURCE_DIR})
-link_directories (${THIRD_LIB})
-link_directories (.)
+if (IS_DIRECTORY ${THIRD_LIB})
+    link_directories (${THIRD_LIB})
+endif ()
 
 # ------------
 # Sub-project.
