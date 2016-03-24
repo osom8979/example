@@ -4,12 +4,8 @@
 #
 # \param _name        [in] Library name.
 # \param _enable      [in] Enable(ON) or disable(OFF).
-# \param _output_list [in] Value name of output list.
-macro (add_library_value _name _enable _output_list)
+macro (add_library_value _name _enable)
     set (USE_${_name} ${_enable} CACHE BOOL "Use the ${_name} library.")
-    if (USE_${_name})
-        list (APPEND ${_output_list} "${_name}")
-    endif ()
 endmacro ()
 
 # --------------------
@@ -23,28 +19,25 @@ set (MAIN_EMAIL  "email"   CACHE STRING  "Author E-mail address.")
 set (MAIN_BRIEF  "brief"   CACHE STRING  "Solution brief string.")
 
 # Libraries.
-set (LIST_OF_LIBRARIES)
-# Default project:
-add_library_value ("zlib"      ON   LIST_OF_LIBRARIES)
-add_library_value ("gtest"     ON   LIST_OF_LIBRARIES)
-add_library_value ("gflags"    ON   LIST_OF_LIBRARIES)
-add_library_value ("glog"      ON   LIST_OF_LIBRARIES)
-add_library_value ("protobuf"  ON   LIST_OF_LIBRARIES)
+add_library_value ("zlib"      ON)
+add_library_value ("gtest"     ON)
+add_library_value ("gflags"    ON)
+add_library_value ("glog"      ON)
+add_library_value ("protobuf"  ON)
 # Extension project:
-add_library_value ("lmdb"      OFF  LIST_OF_LIBRARIES)
-add_library_value ("hdf5"      OFF  LIST_OF_LIBRARIES)
-add_library_value ("openblas"  OFF  LIST_OF_LIBRARIES)
-add_library_value ("libuv"     OFF  LIST_OF_LIBRARIES)
-add_library_value ("snappy"    OFF  LIST_OF_LIBRARIES)
-add_library_value ("leveldb"   OFF  LIST_OF_LIBRARIES)
-add_library_value ("libpng"    OFF  LIST_OF_LIBRARIES)
+add_library_value ("lmdb"      OFF)
+add_library_value ("hdf5"      OFF)
+add_library_value ("openblas"  OFF)
+add_library_value ("libuv"     OFF)
+add_library_value ("snappy"    OFF)
+add_library_value ("leveldb"   OFF)
+add_library_value ("libpng"    OFF)
 # Massive project:
-add_library_value ("boost"     OFF  LIST_OF_LIBRARIES)
-add_library_value ("ffmpeg"    OFF  LIST_OF_LIBRARIES)
-add_library_value ("wxwidgets" OFF  LIST_OF_LIBRARIES)
-add_library_value ("sdl2"      OFF  LIST_OF_LIBRARIES)
-add_library_value ("opencv3"   OFF  LIST_OF_LIBRARIES)
-set (LIST_OF_LIBRARIES ${LIST_OF_LIBRARIES})
+add_library_value ("boost"     OFF)
+add_library_value ("ffmpeg"    OFF)
+add_library_value ("wxwidgets" OFF)
+add_library_value ("sdl2"      OFF)
+add_library_value ("opencv3"   OFF)
 
 # Compiler extension.
 set (USE_CUDA       ON  CACHE BOOL "Use the nvidia-cuda.")
@@ -53,6 +46,9 @@ set (USE_OBFUSCATE  ON  CACHE BOOL "Use the obfuscate.")
 
 # Continuous Integration.
 option (USE_DOXYGEN "API documentation." ON)
+
+# 3rd-party library prefix.
+set (THIRD_PREFIX "$ENV{TPARTY_HOME}" CACHE STRING "3rd-party library prefix")
 
 # Main version.
 set (VERSION_MAJOR  0)

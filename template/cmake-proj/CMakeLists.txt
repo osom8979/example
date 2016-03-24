@@ -38,10 +38,9 @@ set (VERSION_TWEAK "${_timestamp}")
 set (VERSION "${VERSION_MAJOR}.${VERSION_MINOR}.${VERSION_PATCH}")
 
 # Third-party libraries.
-set (THIRD_PREFIX  "${PROJECT_SOURCE_DIR}/tparty/local")
-set (THIRD_BIN     "${THIRD_PREFIX}/bin")
-set (THIRD_INC     "${THIRD_PREFIX}/include")
-set (THIRD_LIB     "${THIRD_PREFIX}/lib")
+set (THIRD_BIN "${THIRD_PREFIX}/bin")
+set (THIRD_INC "${THIRD_PREFIX}/include")
+set (THIRD_LIB "${THIRD_PREFIX}/lib")
 
 set (ENV{PATH}         "${THIRD_BIN}${PATH_SEPARATOR}$ENV{PATH}")
 set (ENV{CPATH}        "${THIRD_INC}${PATH_SEPARATOR}$ENV{CPATH}")
@@ -125,9 +124,11 @@ endif ()
 
 include_directories (${PROJECT_SOURCE_DIR})
 include_directories (${THIRD_INC})
+include_directories (.)
 
 link_directories (${PROJECT_SOURCE_DIR})
 link_directories (${THIRD_LIB})
+link_directories (.)
 
 # ------------
 # Sub-project.
