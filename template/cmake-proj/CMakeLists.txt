@@ -75,6 +75,12 @@ set (UV_ROOT       "${THIRD_PREFIX}")
 set (SNAPPY_ROOT   "${THIRD_PREFIX}")
 set (LEVELDB_ROOT  "${THIRD_PREFIX}")
 set (BOOST_ROOT    "${THIRD_PREFIX}")
+set (wxWidgets_ROOT_DIR "${THIRD_PREFIX}")
+
+if (WIN32 AND NOT CYGWIN AND NOT MSYS)
+    # Force setting: wxWidgets_FIND_STYLE = unix
+    set (CMAKE_CROSSCOMPILING YES)
+endif ()
 
 # Test packages.
 test_find_package  (zlib      ZLIB)
@@ -101,6 +107,21 @@ test_find_package (OBFUSCATE CxxObfuscator)
 
 # Continuous Integration.
 test_find_package (DOXYGEN Doxygen)
+
+# wxWidgets setting.
+if (wxWidgets_FOUND)
+    if (WIN32 AND NOT CYGWIN AND NOT MSYS)
+        convert_msys_to_windows_path (_convert_path wxWidgets_INCLUDE_DIRS)
+        set (wxWidgets_INCLUDE_DIRS ${_convert_path})
+    endif ()
+
+    # compile time link dirs, useful for rpath on UNIX.
+    # Typically an empty string in WIN32 environment.
+    if (UNIX)
+        set (ENV{LIBRARY_PATH} "${wxWidgets_LIBRARY_DIRS}${PATH_SEPARATOR}$ENV{LIBRARY_PATH}")
+        list (INSERT CMAKE_LIBRARY_PATH 0 "${wxWidgets_LIBRARY_DIRS}")
+    endif ()
+endif ()
 
 # -------------------
 # Configure settings.
