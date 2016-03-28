@@ -14,15 +14,18 @@ set (_CMAKE_BUILD_TYPE_RELEASE         "Release")
 set (_CMAKE_BUILD_TYPE_RELWITHDEBINFO  "RelWithDebInfo")
 set (_CMAKE_BUILD_TYPE_MINSIZEREL      "MinSizeRel")
 
-set (CMAKE_MACOSX_RPATH 1) # CMP0042
+set (CMAKE_MACOSX_RPATH  1) # CMP0042
 
-#set (CMAKE_VERBOSE_MAKEFILE    ON)
-#set (BUILD_SHARED_LIBS         ON)
-#set (CMAKE_BUILD_TYPE          "${CMAKE_BUILD_TYPE_RELEASE}")
+#set (CMAKE_VERBOSE_MAKEFILE ON)
+ set (BUILD_SHARED_LIBS      ON)
+
+#set (CMAKE_BUILD_TYPE "Debug")
+#set (CMAKE_BUILD_TYPE "Release")
+
+ set (CMAKE_CXX_FLAGS           "${CMAKE_CXX_FLAGS} -fPIC -Wall")
 #set (CMAKE_EXE_LINKER_FLAGS    "${CMAKE_EXE_LINKER_FLAGS}")
 #set (CMAKE_MODULE_LINKER_FLAGS "${CMAKE_MODULE_LINKER_FLAGS}")
 #set (CMAKE_SHARED_LINKER_FLAGS "${CMAKE_SHARED_LINKER_FLAGS}")
- set (CMAKE_CXX_FLAGS           "${CMAKE_CXX_FLAGS} -fPIC -Wall")
 
 list (APPEND CMAKE_MODULE_PATH "${PROJECT_SOURCE_DIR}/cmake/modules")
 
@@ -111,7 +114,7 @@ test_find_package (DOXYGEN Doxygen)
 # wxWidgets setting.
 if (wxWidgets_FOUND)
     if (WIN32 AND NOT CYGWIN AND NOT MSYS)
-        convert_msys_to_windows_path (_convert_path wxWidgets_INCLUDE_DIRS)
+        convert_msys_to_windows_path (_convert_path "${wxWidgets_INCLUDE_DIRS}")
         set (wxWidgets_INCLUDE_DIRS ${_convert_path})
     endif ()
 
