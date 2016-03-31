@@ -10,6 +10,9 @@ import sys
 import __main__ as main
 from optparse import OptionParser
 
+# Project packages.
+import tools
+
 SCRIPT_PATH = os.path.abspath(main.__file__)
 RUNTIME_DIR = os.path.dirname(SCRIPT_PATH)
 
@@ -22,8 +25,12 @@ PROJECT_CMAKE_TEMPLATE = os.path.join(TEMPLATE_DIR, PROJECT_CMAKE_TEMPLATE_NAME)
 CONFIG_CMAKE_PATH = 'config.cmake'
 CONFIG_COMMAND = 'cmake -L -P' + CONFIG_CMAKE_PATH
 
+CMD_HELP  = 'help'
+CMD_CLASS = 'class'
+
 CMD_MAP = {
-    'help' : 'show this help message and exit.',
+    CMD_HELP  : 'Show this help message and exit.',
+    CMD_CLASS : 'Generate default c++ source/header files.',
 }
 
 CMD_MESSAGE = "\nCommand list:\n"
@@ -67,9 +74,15 @@ def parseArguments(argv, print_help=True):
 # ENTRY-POINT.
 # ------------
 
+def main_class(options):
+    if len(sys.argv) <= 1:
+        print "Usage: python {} {} {{package/path/classname}}".format(sys.argv[0], CMD_CLASS)
+        exit(1)
+    tools.genClass(sys.argv[1])
+
 def main():
     command, options = parseArguments(sys.argv)
-    if command is None or command == ENV.CMD_HELP:
+    if command is None or command == CMD_HELP:
         return
     eval('main_{}(options)'.format(command))
 
