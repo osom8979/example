@@ -3,8 +3,14 @@
 CXX=g++
 TARGET=a.out
 OBJS=main.o
-CXXFLAGS=-Wall -std=c++11
-LDFLAGS=-lpthread
+
+ifneq (${TPARTY_HOME}, "")
+CXXFLAGS=-I${TPARTY_HOME}/local/include
+LDFLAGS=-L${TPARTY_HOME}/local/lib
+endif
+
+CXXFLAGS+=-Wall -std=c++11
+LDFLAGS+=-lpthread
 
 .PONEY=all clean
 
