@@ -5,12 +5,12 @@ TARGET=a.out
 OBJS=main.o
 
 ifneq (${TPARTY_HOME}, "")
-CXXFLAGS=-I${TPARTY_HOME}/local/include
-LDFLAGS=-L${TPARTY_HOME}/local/lib
+CXXFLAGS+=-I${TPARTY_HOME}/local/include
+LDFLAGS+=-L${TPARTY_HOME}/local/lib
 endif
 
 CXXFLAGS+=-Wall -std=c++11
-LDFLAGS+=-lpthread -luv
+LDFLAGS+=-luv -lpthread
 
 .PONEY=all clean
 
@@ -20,5 +20,5 @@ clean:
 	rm -rf ${OBJS} ${TARGET}
 
 ${TARGET}: ${OBJS}
-	${CXX} -o $@ ${LDFLAGS} $^
+	${CXX} -o $@ $^ ${LDFLAGS}
 
