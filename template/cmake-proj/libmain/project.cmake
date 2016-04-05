@@ -18,3 +18,8 @@ endif ()
 set (_project_include_dirs ${CMAKE_CURRENT_LIST_DIR})
 set (_project_ldflags      -L${CMAKE_CURRENT_LIST_DIR})
 
+# CUDA setting.
+if (USE_CUDA AND CUDA_FOUND)
+    cuda_include_directories (${_project_include_dirs})
+endif ()
+
