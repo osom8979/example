@@ -38,6 +38,8 @@ add_library_value ("ffmpeg"    OFF)
 add_library_value ("wxwidgets" OFF)
 add_library_value ("sdl2"      OFF)
 add_library_value ("opencv3"   OFF)
+# Custom project:
+add_library_value ("tbag"      OFF)
 
 # Compiler extension.
 set (USE_CUDA       ON  CACHE BOOL "Use the nvidia-cuda.")

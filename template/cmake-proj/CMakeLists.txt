@@ -61,6 +61,7 @@ set (UV_ROOT       "${THIRD_PREFIX}")
 set (SNAPPY_ROOT   "${THIRD_PREFIX}")
 set (LEVELDB_ROOT  "${THIRD_PREFIX}")
 set (BOOST_ROOT    "${THIRD_PREFIX}")
+set (TBAG_ROOT     "${THIRD_PREFIX}")
 set (wxWidgets_ROOT_DIR "${THIRD_PREFIX}")
 
 if (WIN32 AND NOT CYGWIN AND NOT MSYS)
@@ -85,6 +86,7 @@ test_find_package  (boost     Boost)
 #test_find_package (ffmpeg    FFmpeg)
 test_find_package  (wxwidgets wxWidgets)
 #test_find_package (sdl2      SDL2)
+test_find_package  (tbag      Tbag)
 
 # Compiler extension.
 test_find_package (CUDA      CUDA)
