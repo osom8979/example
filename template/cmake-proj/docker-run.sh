@@ -12,7 +12,7 @@ fi
 WORKING=$PWD
 HOST_VOLUME=$WORKING/docker/vol
 GUEST_VOLUME=/vol
-NAME=main
+NAME=`cmake -L -P config.cmake | grep MAIN_NAME | sed -e 's/^MAIN_NAME.*=\\(.*\\)$/\\1/g'`
 
 if [[ -z $TAG ]]; then
 MACHINE_NAME=$NAME-$SUFFIX
