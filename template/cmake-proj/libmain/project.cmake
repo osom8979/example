@@ -15,8 +15,10 @@ if (_project_is_verbose)
     message ("++ _project_ldflags: ${_project_ldflags}")
 endif ()
 
-set (_project_include_dirs ${CMAKE_CURRENT_LIST_DIR})
-set (_project_ldflags      -L${CMAKE_CURRENT_LIST_DIR})
+set (_project_default_install ON)
+set (_project_definitions     _DLIBMAIN)
+set (_project_include_dirs    ${CMAKE_CURRENT_LIST_DIR})
+set (_project_ldflags         -L${CMAKE_CURRENT_LIST_DIR})
 
 # CUDA setting.
 if (USE_CUDA AND CUDA_FOUND)
