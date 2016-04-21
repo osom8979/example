@@ -1,6 +1,6 @@
 .SUFFIXES: .cpp .o
 
-FILES=main1 main2
+FILES=main1 main2 main3 main4 main5 main6 main7 main8 main9 main10 main11
 
 CXX=g++
 OBJ_EXT=.o
@@ -15,7 +15,7 @@ LDFLAGS=-L${TPARTY_HOME}/local/lib
 endif
 
 CXXFLAGS+=-Wall -std=c++11
-LDFLAGS+=-lpthread
+LDFLAGS+=-lpthread -lncurses
 
 .PONEY=all clean
 
