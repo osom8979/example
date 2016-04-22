@@ -1,0 +1,30 @@
+syntax = "proto2";
+
+package example;
+
+message DemoHeader {
+    required int32 id   = 1;
+    required int32 size = 2;
+    required int32 ext1 = 3;
+    optional int32 ext2 = 4;
+}
+
+message DemoBody {
+    required int32  id    = 1;
+    required string name  = 2;
+    optional string email = 3;
+
+    enum Type {
+        MOBILE = 0;
+        HOME   = 1;
+        WORK   = 2;
+    }
+
+    message Nested {
+        required int32 id   = 1;
+        optional Type  type = 2 [default = HOME];
+    }
+
+    repeated Nested nested = 4;
+}
+
