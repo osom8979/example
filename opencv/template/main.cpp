@@ -13,7 +13,6 @@ int main(int argc, char ** argv)
     cv::Mat frame;
     cv::Mat preview;
 
-    int const VKEY_ESC = 30;
     std::string const TITLE = "OpenCV Sample";
     cv::namedWindow(TITLE);
 
@@ -24,7 +23,7 @@ int main(int argc, char ** argv)
         preview = frame;
 
         cv::imshow(TITLE, preview);
-        if (cv::waitKey(VKEY_ESC) >= 0) {
+        if (cv::waitKey(1) >= 0) {
             break;
         }
     }
