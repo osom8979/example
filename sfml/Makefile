@@ -9,12 +9,15 @@ EXE_EXT=.out
 TARGETS=${FILES:%=%${EXE_EXT}}
 OBJS=${FILES:%=%${OBJ_EXT}}
 
-ifneq (${TPARTY_HOME}, "")
+ifeq (${TPARTY_HOME}, "")
 CXXFLAGS=-I${TPARTY_HOME}/local/include
 LDFLAGS=-L${TPARTY_HOME}/local/lib
-ifneq ($(uname -s), "Darwin")
+ifeq ($(uname -s), "Darwin")
+CXXFLAGS=
 LDFLAGS=-Wl,-rpath,${TPARTY_HOME}/local/Library/Frameworks
 endif
+CXXFLAGS=
+LDFLAGS=
 endif
 
 CXXFLAGS+=-Wall -std=c++11
@@ -28,8 +31,8 @@ clean:
 	rm -rf ${OBJS} ${TARGETS}
 
 %.out: %.o
-	${CXX} ${LDFLAGS} -o $@ $^
+	${CXX} $^ ${LDFLAGS} -o $@
 
 %.o: %.cpp
-	${CXX} ${CXXFLAGS} -o $@ -c $^
+	${CXX} $^ ${CXXFLAGS} -o $@ -c
 
