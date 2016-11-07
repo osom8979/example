@@ -12,9 +12,6 @@ uv_loop_t * loop;
 uv_tcp_t * tcp_client;
 uv_write_t write_request;
 
-char ECHO_STRING[] = "HELLO";
-uv_buf_t buf = { ECHO_STRING, 4 };
-
 void write_cb(uv_write_t * req, int status)
 {
     uv_close((uv_handle_t*) req->handle, NULL);
@@ -27,6 +24,9 @@ void on_connect(uv_connect_t * req, int status)
         // error!
         return;
     }
+
+    char ECHO_STRING[] = "HELLO";
+    uv_buf_t buf = { ECHO_STRING, 5 };
 
     uv_write(&write_request
            , (uv_stream_t *) tcp_client
