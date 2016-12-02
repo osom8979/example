@@ -1,7 +1,3 @@
-// FilesystemExample.cpp : Defines the entry point for the console application.
-//
-
-#include "stdafx.h"
 
 #include <iostream>
 #include <string>
@@ -295,19 +291,11 @@ bool remove(std::string const & path)
 bool exists(std::string const & path)
 {
     std::wstring const WCS_PATH = mbsToWcs(path);
-    BOOL result = FALSE;
-
     if (WCS_PATH.size() == 0) {
-        result = PathFileExistsA(&path[0]);
+        return (PathFileExistsA(&path[0]) == TRUE);
     } else {
-        result = PathFileExistsW(&WCS_PATH[0]);
+        return (PathFileExistsW(&WCS_PATH[0]) == TRUE);
     }
-
-    if (result == FALSE) {
-        cerr << "PathFileExistsA() ERROR: " << GetLastError() << endl;
-        return false;
-    }
-    return true;
 }
 
 static DWORD getAttribute(std::string const & path)
@@ -392,7 +380,7 @@ std::vector<std::string> scanDir(std::string const & path)
     } while (FindNextFileW(find_handle, &find_data) == TRUE);
 
     FindClose(find_handle);
-    return std::vector<std::string>();
+    return result;
 }
 
 int main(int argc, char ** argv)
@@ -401,11 +389,24 @@ int main(int argc, char ** argv)
     cout << "getTempDir(): " << getTempDir() << endl;
     cout << "getWorkDir(): " << getWorkDir() << endl;
     cout << "getHomeDir(): " << getHomeDir() << endl;
+    cout << "getExePath(): " << getExePath() << endl;
 
-    cout << isDirectory(getTempDir()) << isRegularFile(getTempDir()) << endl;
-    cout << isDirectory(getWorkDir()) << isRegularFile(getWorkDir()) << endl;
-    cout << isDirectory(getHomeDir()) << isRegularFile(getHomeDir()) << endl;
-    cout << isDirectory(getExePath()) << isRegularFile(getExePath()) << endl;
+    cout << "idDir(" << isDirectory(getTempDir()) << ")isFile(" << isRegularFile(getTempDir()) << ")\n";
+    cout << "idDir(" << isDirectory(getWorkDir()) << ")isFile(" << isRegularFile(getWorkDir()) << ")\n";
+    cout << "idDir(" << isDirectory(getHomeDir()) << ")isFile(" << isRegularFile(getHomeDir()) << ")\n";
+    cout << "idDir(" << isDirectory(getExePath()) << ")isFile(" << isRegularFile(getExePath()) << ")\n";
+
+    cout << "createDirectory()" << createDirectory("test") << endl;
+    cout << "removeDirectory()" << removeDirectory("test") << endl;
+
+    cout << "scanDir():\n";
+    for (auto & cursor : scanDir(".")) {
+        cout << " - " << cursor << endl;
+    }
+
+    cout << "exists(): " << exists("FilesystemExample.exe") << endl;
+    cout << "exists(): " << exists("FilesystemExample.exe") << endl;
+    cout << "exists(): " << exists("ReadMe.txt") << endl;
 
     return 0;
 }
