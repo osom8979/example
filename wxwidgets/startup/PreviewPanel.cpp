@@ -5,7 +5,7 @@
  * @date   2016-08-04
  */
 
-#include <wxbarista/PreviewPanel.hpp>
+#include <PreviewPanel.hpp>
 #include <wx/dcbuffer.h>
 
 IMPLEMENT_CLASS(PreviewPanel, wxPanel);

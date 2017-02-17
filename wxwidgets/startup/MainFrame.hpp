@@ -15,7 +15,7 @@
 
 #include <wx/wx.h>
 #include <wx/aui/aui.h>
-#include <wxbarista/PreviewPanel.hpp>
+#include <PreviewPanel.hpp>
 
 /**
  * List of control id of wxWidgets.

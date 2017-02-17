@@ -5,7 +5,7 @@
  * @date   2016-08-04
  */
 
-#include <wxbarista/MainFrame.hpp>
+#include <MainFrame.hpp>
 
 wxBEGIN_EVENT_TABLE(MainFrame, wxFrame)
 EVT_CLOSE(MainFrame::onClose)
