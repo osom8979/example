@@ -23,7 +23,8 @@ int main(int argc, char ** argv)
         preview = frame;
 
         cv::imshow(TITLE, preview);
-        if (cv::waitKey(1) >= 0) {
+        int key = cv::waitKey(1);
+        if (key == 'q' || key == 'Q') {
             break;
         }
     }
