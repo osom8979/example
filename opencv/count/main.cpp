@@ -17,6 +17,12 @@ struct LinearEquation
 };
 
 template <typename T>
+inline T getY(LinearEquation<T> e, T x)
+{
+    return e.a * x + e.b;
+}
+
+template <typename T>
 inline LinearEquation<T> getLinearEquationWithTwoPoint(T x1, T y1, T x2, T y2)
 {
     assert(x1 != x2);
@@ -66,10 +72,20 @@ bool isCross(Point const & p11, Point const & p12, Point const & p21, Point cons
         LinearEquation<T> e1 = getLinearEquationWithTwoPoint<T>(p11, p12);
         LinearEquation<T> e2 = getLinearEquationWithTwoPoint<T>(p21, p22);
 
-        if (e1.a != e2.a) {
+        if (isParallelWithTwoLinearEquation<T>(e1, e2) == false) {
             cross = getIntersectionWithTwoLinearEquation(e1, e2);
             return isContains<T, Point>(p11, p12, cross) && isContains<T, Point>(p21, p22, cross);
+        } else {
+            return false;
         }
+    } else if (p11.x != p12.x && p21.x == p22.x) {
+        LinearEquation<T> e1 = getLinearEquationWithTwoPoint<T>(p11, p12);
+        Point cross = Point(p21.x, getY(e1, p21.x));
+        return isContains<T, Point>(p11, p12, cross);
+    } else if (p11.x == p12.x && p21.x != p22.x) {
+        LinearEquation<T> e2 = getLinearEquationWithTwoPoint<T>(p21, p22);
+        Point cross = Point(p11.x, getY(e2, p11.x));
+        return isContains<T, Point>(p21, p22, cross);
     }
     return false;
 }
@@ -180,6 +196,10 @@ void drawPositionText(cv::InputOutputArray image, RelativePosition pos, int righ
 void onClick(int event, int x, int y, int flags, void * userdata)
 {
     UserData * user = static_cast<UserData*>(userdata);
+
+    std::stringstream ss;
+    ss << "Mouse x:" << x << ", y:" << y;
+    user->message = ss.str();
 
     switch (event) {
     case cv::EVENT_LBUTTONDOWN: user->p1 = cv::Point(x, y);  break;
