@@ -220,7 +220,14 @@ void onClick(int event, int x, int y, int flags, void * userdata)
 
 int main(int argc, char ** argv)
 {
-    cv::VideoCapture cap(0);
+    cv::VideoCapture cap;
+
+    if (argc >= 2) {
+        cap.open(std::string(argv[1])); // URL
+    } else {
+        cap.open(0);
+    }
+
     if (cap.isOpened() == 0) {
         return 1;
     }
