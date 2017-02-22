@@ -1,5 +1,4 @@
 #include <cassert>
-
 #include <string>
 #include <deque>
 #include <iostream>
@@ -54,8 +53,16 @@ inline cv::Point_<T> getIntersectionWithTwoLinearEquation(LinearEquation<T> cons
     return result;
 }
 
+template <typename T>
+bool isContains(T const & p1, T const & p2, T const & check)
+{
+    T const min = std::min(p1, p2);
+    T const max = std::max(p1, p2);
+    return (min <= check && check <= max);
+}
+
 template <typename T, typename Point = cv::Point_<T> >
-bool isContains(Point const & p1, Point const & p2, Point const & check)
+bool isContains2d(Point const & p1, Point const & p2, Point const & check)
 {
     T const x_min = std::min(p1.x, p2.x);
     T const x_max = std::max(p1.x, p2.x);
@@ -74,18 +81,20 @@ bool isCross(Point const & p11, Point const & p12, Point const & p21, Point cons
 
         if (isParallelWithTwoLinearEquation<T>(e1, e2) == false) {
             cross = getIntersectionWithTwoLinearEquation(e1, e2);
-            return isContains<T, Point>(p11, p12, cross) && isContains<T, Point>(p21, p22, cross);
+            return isContains2d<T, Point>(p11, p12, cross) && isContains2d<T, Point>(p21, p22, cross);
         } else {
             return false;
         }
+
     } else if (p11.x != p12.x && p21.x == p22.x) {
         LinearEquation<T> e1 = getLinearEquationWithTwoPoint<T>(p11, p12);
         Point cross = Point(p21.x, getY(e1, p21.x));
-        return isContains<T, Point>(p11, p12, cross);
+        return isContains<T>(p21.y, p22.y, cross.y) && isContains2d<T, Point>(p11, p12, cross);
+
     } else if (p11.x == p12.x && p21.x != p22.x) {
         LinearEquation<T> e2 = getLinearEquationWithTwoPoint<T>(p21, p22);
         Point cross = Point(p11.x, getY(e2, p11.x));
-        return isContains<T, Point>(p21, p22, cross);
+        return isContains<T>(p11.y, p12.y, cross.y) &&  isContains2d<T, Point>(p21, p22, cross);
     }
     return false;
 }
