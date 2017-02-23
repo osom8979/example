@@ -27,10 +27,9 @@ bool encodeAndDecode(cv::Mat const & input, cv::Mat & output)
     uint8_t * encode;
     auto now_time = std::chrono::system_clock::now();
     //size_t encode_size = WebPEncodeLosslessBGR(input.data(), width, height, width, &encode);
-    size_t encode_size = WebPEncodeBGR(input.data, width, height, width, 100, &encode);
+    size_t encode_size = WebPEncodeBGR(input.data, width, height, width * channels, 100, &encode);
     auto delay_time = std::chrono::system_clock::now() - now_time;
     std::cout << "Encode Time: " << std::chrono::duration_cast<std::chrono::milliseconds>(delay_time).count() << "millisec\n";
-
 
     int decode_width = 0;
     int decode_height = 0;
@@ -77,12 +76,9 @@ int main(int argc, char ** argv)
         // PREVIEW CODE.
         cv::resize(frame, preview, cv::Size(300, 300));
 
-        {
-            cv::Mat webp;
-            encodeAndDecode(preview, webp);
-        }
-
-        cv::imshow(TITLE, preview);
+        cv::Mat webp;
+        encodeAndDecode(preview, webp);
+        cv::imshow(TITLE, webp);
 
         int key = cv::waitKey(1);
         if (key == 'q' || key == 'Q') {
