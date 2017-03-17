@@ -24,7 +24,7 @@ endforeach ()
 
 set (CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -std=c++11 ${wxWidgets_CXX_FLAGS}")
 
-set (SOURCE_FILES main.cpp wxGoogleMap.cpp)
+set (SOURCE_FILES main.cpp tinyxml2.cpp wxGoogleMap.cpp)
 
 add_executable (${PROJECT_NAME} ${SOURCE_FILES})
 target_link_libraries (${PROJECT_NAME} PRIVATE ${wxWidgets_LIBRARIES})

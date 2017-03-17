@@ -14,6 +14,7 @@
 #endif
 
 #include <wx/wx.h>
+#include <atomic>
 
 // Forward declaration.
 class wxBoxSizer;
@@ -31,13 +32,12 @@ class wxGoogleMap : public wxPanel
 private:
     wxDECLARE_EVENT_TABLE();
 
-public:
-    constexpr static char const * const wxGoogleMapDefaultUrl = "wxGoogleMap";
-    constexpr static wxWindowID const wxGoogleMapWebViewId = 10001;
-
 private:
     wxWebView  * _web;
     wxBoxSizer * _sizer;
+
+private:
+    std::atomic_bool _first_load;
 
 public:
     wxGoogleMap();
@@ -62,9 +62,15 @@ protected:
     void Init();
 
 protected:
+    void OnNavigating(wxWebViewEvent & event);
+    void OnNavigated(wxWebViewEvent & event);
     void OnLoaded(wxWebViewEvent & event);
     void OnTitleChanged(wxWebViewEvent & event);
     void OnError(wxWebViewEvent & event);
+
+public:
+    wxString getDomResult();
+    std::size_t getMarkerCount();
 };
 
 #endif // __INCLUDE_WX_GOOGLEMAP_HPP__
