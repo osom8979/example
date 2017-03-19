@@ -1,0 +1,221 @@
+<!DOCTYPE html>
+<html lang='ko' style='height:100%;'>
+<head>
+    <meta http-equiv='Content-Type' content='text/html; charset=utf-8' />
+    <meta name='viewport' content='width=device-width, initial-scale=1' />
+    <script async type='text/javascript' src='https://maps.googleapis.com/maps/api/js?v=3&key=AIzaSyBV3gzNt1Gy8oyyp7UrxiobSEWzbCDg_EI&libraries=geometry&callback=initGoogleMap'></script>
+    <script type='text/javascript'>
+        var g_first_position = { lat: 37.5653161, lng: 126.9745883 };
+        var g_max_log_line = 10;
+
+        var g_icons = {
+            legacy_path: {
+                name: 'LEGACY PATH',
+                icon: 'http://maps.google.com/mapfiles/ms/icons/red-dot.png'
+            },
+            new_path: {
+                name: 'NEW PATH',
+                icon: 'http://maps.google.com/mapfiles/ms/icons/green-dot.png'
+            }
+        };
+        var g_map;
+
+        var g_dom = new function() {
+            this.paths = [];
+            this.request_count = 0;
+
+            this.toJsonString = function() {
+                this.request_count++;
+                return JSON.stringify(this);
+            };
+        };
+
+        function onLoad() {
+            // EMPTY.
+        }
+
+        function initGoogleMap() {
+            var options = {
+                zoom: 13,
+                center: new google.maps.LatLng(g_first_position),
+                mapTypeId : google.maps.MapTypeId.ROADMAP
+            };
+
+            g_map = new google.maps.Map(document.getElementById('map_canvas'), options);
+            g_map.controls[google.maps.ControlPosition.RIGHT_TOP].push(initGuidePopup(g_icons));
+            g_map.controls[google.maps.ControlPosition.LEFT_BOTTOM].push(document.getElementById('debugging_popup'));
+
+            google.maps.event.addListener(g_map, 'rightclick', function(event) {
+                var marker = new google.maps.Marker({
+                    title: 'Red Marker',
+                    position: event.latLng,
+                    icon: 'http://maps.google.com/mapfiles/ms/icons/red-dot.png',
+                    animation: google.maps.Animation.DROP,
+                    map: g_map
+                });
+                g_dom.paths.push(event.latLng);
+            });
+        }
+
+        function initGuidePopup(icons) {
+            var popup = document.getElementById('guide_popup');
+            for (var key in icons) {
+                popup.appendChild(createPopupItem(icons[key].icon, icons[key].name));
+            }
+            return popup;
+        }
+
+        function showDebuggingPopup(enable) {
+            document.getElementById('debugging_popup').style.visibility = (enable ? 'visible' : 'hidden');
+        }
+
+        function createPopupItem(src, text) {
+            var div = document.createElement('div');
+            div.appendChild(createPopupImage(src));
+            div.appendChild(createPopupText(text));
+            return div;
+        }
+
+        function createPopupImage(src) {
+            var img = document.createElement('img')
+            img.setAttribute('src', src);
+            img.className = 'popup-content';
+            return img;
+        }
+
+        function createPopupText(text) {
+            var element = document.createElement('span')
+            element.className = 'popup-content';
+            element.textContent = text;
+            return element;
+        }
+
+        function createMarker(title, longitude, latitude, map) {
+            return new google.maps.Marker({
+                title: title,
+                position: {lng: longitude, lat: latitude},
+                map: map
+            });
+        }
+
+        function getDomResult() {
+            return document.getElementById('map_result');
+        }
+
+        function selectWithNode(node) {
+            if (document.selection) {
+                var range = document.body.createTextRange();
+                range.moveToElementText(node);
+                range.select();
+            } else if (window.getSelection) {
+                var range = document.createRange();
+                range.selectNodeContents(node);
+                window.getSelection().removeAllRanges();
+                window.getSelection().addRange(range);
+            }
+        }
+
+        function updateDom() {
+            var dom = getDomResult();
+            dom.innerText = g_dom.toJsonString();
+            selectWithNode(dom);
+        }
+
+        function appendLogMessage(msg) {
+            document.getElementById('debugging_log').textContent += msg + '\n';
+        }
+
+        function toast(message) {
+            var toast_elem = document.getElementById('toast');
+            var   map_elem = document.getElementById('map_canvas');
+
+            toast_elem.innerText  = message;
+            toast_elem.style.left = (map_elem.clientWidth / 2.0) - (toast_elem.clientWidth / 2.0).toString() + 'px';
+
+            toast_elem.classList.remove('toast-popup');
+            window.setTimeout(function(){
+                toast_elem.className = 'toast-popup';
+            }, 1);
+        }
+
+    </script>
+    <style type='text/css'>
+        body {
+            height: 100%;
+            margin: 0;
+            overflow: hidden;
+        }
+
+        .map {
+            width: 100%;
+            height: 100%;
+        }
+        .dom {
+            /* Don't use the hidden of visibility. */
+            /* display: none; */
+            /* visibility: hidden; */
+        }
+        .popup {
+            font-family: Arial, sans-serif;
+            background: #fff;
+            padding: 10px;
+            margin: 10px;
+            border: 3px solid #000;
+        }
+        .popup-content {
+            vertical-align: middle;
+            margin: 2px;
+        }
+
+        @keyframes ani-popup-toast {
+              0% { top: -50px; }
+             20% { top:  20px; }
+             80% { top:  20px; }
+            100% { top: -50px; }
+        }
+
+        .toast-popup {
+            top: -50px;
+            height: 20px;
+
+            position: absolute;
+            z-index: 2147483647;
+
+            font-family: Arial, sans-serif;
+            background: #f39c12;
+            color: #fff;
+            padding-top: 2px;
+            padding-bottom: 2px;
+            padding-left: 8px;
+            padding-right: 8px;
+            border-radius: 3px;
+            vertical-align: middle;
+            text-align: center;
+
+            animation-name: ani-popup-toast;
+            animation-duration: 4s;
+            transition: transform 500ms ease-out;
+        }
+
+        #debugging_popup {
+            visibility: hidden;
+        }
+    </style>
+</head>
+
+<body onload='onLoad()'>
+    <div id='toast' style='position:absolute;'></div>
+    <div id='map_canvas' class='map'></div>
+    <div id='map_result' class='dom'></div>
+    <div id='guide_popup' class='popup'>
+    </div>
+    <div id='debugging_popup' class='popup'>
+        <textarea id='debugging_log' rows='5' wrap='logical' style='width:100%;' placeholder='Log message'></textarea>
+        <form action='request://debugging' method='get'>
+            <input type='text' name='data' value='value' />
+            <input type='submit' value='submit' />
+        </form>
+    </div>
+</body>
+</html>
+
