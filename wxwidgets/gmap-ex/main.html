@@ -7,6 +7,7 @@
     <script type='text/javascript'>
         var g_first_position = { lat: 37.5653161, lng: 126.9745883 };
         var g_max_log_line = 10;
+        var g_browser_name = '';
 
         var g_icons = {
             legacy_path: {
@@ -34,6 +35,16 @@
             // EMPTY.
         }
 
+        function updateBrowserName(name) {
+            g_browser_name = name;
+        }
+
+        function requestForSumari(uri) {
+            if (g_browser_name == 'sumari') {
+                window.location.href = 'request://' + uri;
+            }
+        }
+
         function initGoogleMap() {
             var options = {
                 zoom: 13,
@@ -54,6 +65,7 @@
                     map: g_map
                 });
                 g_dom.paths.push(event.latLng);
+                requestForSumari('marker?lat=' + event.latLng.lat() + '&lng=' + event.latLng.lng());
             });
         }
 

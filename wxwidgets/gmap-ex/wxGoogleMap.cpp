@@ -212,6 +212,7 @@ void wxGoogleMap::OnLoaded(wxWebViewEvent & event)
         // EMPTY.
     } else {
         _first_load.store(true);
+        _web->RunScript(wxT("javascript:updateBrowserName('sumari');"));
         JsLogMessage(wxT("wxGoogleMap::OnLoaded(") + event.GetURL() + wxT(")"));
     }
 }
