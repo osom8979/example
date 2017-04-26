@@ -10,8 +10,6 @@
 #include <wx/wx.h>
 #include <MainFrame.hpp>
 
-#define TITLE "Layouts"
-
 class Application final : public wxApp
 {
 public:
@@ -23,7 +21,7 @@ public:
     {
         try {
             ::wxInitAllImageHandlers();
-            auto * mainframe = new MainFrame(wxT(TITLE));
+            auto * mainframe = new MainFrame();
             mainframe->Show(true);
             wxApp::SetTopWindow(mainframe);
         } catch (...) {
