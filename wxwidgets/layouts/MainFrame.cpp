@@ -52,10 +52,31 @@ MainFrame::MainFrame() : wxFrame(nullptr, wxID_ANY, wxT("Layouts"))
         grid->AddGrowableRow(2, 1);
         grid->AddGrowableCol(1, 1);
 
-        hbox->Add(grid, wxSizerFlags().Proportion(1).Border(wxALL, BORDER_IN_PIXELS));//1, wxALL | wxEXPAND, 15);
+        hbox->Add(grid, wxSizerFlags().Proportion(1).Border(wxALL, BORDER_IN_PIXELS));
         property_panel->SetSizer(hbox);
     }
     sizer->Add(property_panel, wxSizerFlags().Expand().Border(wxALL, BORDER_IN_PIXELS));
+
+    {
+        int  const SPACE = 12;
+        long const TEXT_STYLE = wxALIGN_CENTRE | wxALIGN_CENTRE_HORIZONTAL;
+        wxBoxSizer * hbox = new wxBoxSizer(wxHORIZONTAL);
+        hbox->Add(new wxStaticText(this, wxID_ANY, wxT("ID:"), wxDefaultPosition, wxDefaultSize, TEXT_STYLE), 2);
+        hbox->Add(new   wxTextCtrl(this, wxID_ANY), 3);
+        hbox->AddSpacer(SPACE);
+        hbox->Add(new wxStaticText(this, wxID_ANY, wxT("COUNT:"), wxDefaultPosition, wxDefaultSize, TEXT_STYLE), 2);
+        hbox->Add(new   wxTextCtrl(this, wxID_ANY), 3);
+        hbox->AddSpacer(SPACE);
+        hbox->Add(new    wxButton(this, wxID_ANY, wxT("SEND"), wxDefaultPosition, wxDefaultSize, TEXT_STYLE), 2);
+
+        sizer->Add(new wxStaticLine(this, wxID_ANY), wxSizerFlags().Expand().Border(wxALL, BORDER_IN_PIXELS));
+        wxFont const DEBUG_FONT(12, wxFONTFAMILY_DEFAULT, wxFONTSTYLE_NORMAL, wxFONTWEIGHT_NORMAL);
+        wxStaticText * debug_text = new wxStaticText(this, wxID_ANY, wxT("Debugging Tools"));
+        debug_text->SetFont(DEBUG_FONT);
+        sizer->Add(debug_text, wxSizerFlags().Border(wxALL, BORDER_IN_PIXELS));
+        sizer->Add(hbox, wxSizerFlags().Expand().Border(wxALL, BORDER_IN_PIXELS));
+    }
+
     sizer->AddStretchSpacer(1);
     sizer->Add(new wxStaticLine(this, wxID_ANY), wxSizerFlags().Expand().Border(wxALL, BORDER_IN_PIXELS));
 
