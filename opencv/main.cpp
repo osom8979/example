@@ -32,7 +32,7 @@ int main(int argc, char ** argv)
     switch (test_number) {
     case  1: return test01(arg_vec);
     case  2: return test02(arg_vec);
-
+    case  3: return test03(arg_vec);
     default:
         cout << "Undefined test number.\n";
     }

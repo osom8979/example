@@ -13,6 +13,7 @@ using namespace std;
 
 int test01(vector<string> & argv);
 int test02(vector<string> & argv);
+int test03(vector<string> & argv);
 
 #endif // __INCLUDE_EXAMPLE__OPENCV_TEST_HPP__
 
