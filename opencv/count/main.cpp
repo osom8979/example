@@ -220,23 +220,12 @@ void onClick(int event, int x, int y, int flags, void * userdata)
 
 int main(int argc, char ** argv)
 {
-    cv::VideoCapture cap;
-
-    if (argc >= 2) {
-        cap.open(std::string(argv[1])); // URL
-    } else {
-        cap.open(0);
-    }
-
-    if (cap.isOpened() == 0) {
-        return 1;
-    }
-
     UserData userdata;
     userdata.mode = DrawMode::NORMAL;
     userdata.message = "Draw!";
 
-    cv::Mat frame;
+    cv::Mat frame(300, 300, CV_8UC3);
+    frame = cv::Scalar::all(0);
     cv::Mat preview;
 
     std::string const TITLE = "OpenCV Sample";
@@ -244,10 +233,8 @@ int main(int argc, char ** argv)
     cv::setMouseCallback(TITLE, onClick, &userdata);
 
     while (true) {
-        cap >> frame;
-
         // PREVIEW CODE.
-        preview = frame;
+        frame.copyTo(preview);
         if (userdata.mode == DrawMode::NORMAL) {
             drawText(preview, userdata.message, 0, 0, 255, 0, 0);
         }
