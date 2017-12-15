@@ -124,8 +124,12 @@ int main(int argc, char ** argv)
         logfile = argv[1];
     }
 
+    // Format 01:
+    // 10x10,10x10,10x10,10x10
+    // Format 02:
+    // IsCross
     std::vector<PointInfo> point_info_list;
-    std::size_t point_info_index = 18308;
+    std::size_t point_info_index = 0;
     libtbag::filesystem::Path const LOGFILE_PATH(logfile);
     if (LOGFILE_PATH.isRegularFile()) {
         std::string content;
@@ -134,9 +138,9 @@ int main(int argc, char ** argv)
             for (auto & cursor : list) {
                 auto cols = libtbag::string::splitTokens(cursor, ",");
                 PointInfo info;
-                if (cols.size() == 1 && cols[0] == "IsCross!!!") {
+                if (cols.size() == 1 && cols[0] == "IsCross") {
                     point_info_list.back().is_cross = true;
-                    point_info_list.back().input += ",IsCross!!!";
+                    point_info_list.back().input += ",IsCross";
                 } else {
                     info.input = cursor;
                     auto p11 = libtbag::string::splitTokens(cols[0], "x");
