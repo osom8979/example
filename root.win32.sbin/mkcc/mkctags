@@ -1,0 +1,23 @@
+#!/bin/sh
+
+# ------------------
+# Make ctags script.
+# ------------------
+
+TAGSNAME=tags
+
+#FLAGS="-a"
+FLAGS=""
+FLAGS="$FLAGS --c++-kinds=+p --fields=+iaS --extra=+q" # OmniCppComplete.
+FLAGS="$FLAGS --exclude=boost" # Memory overflow.
+FLAGS="$FLAGS --tag-relative=no" # Absolute path.
+FLAGS="$FLAGS -f $TAGSNAME"
+FLAGS="$FLAGS -R"
+
+# cleanup.
+if [ -f $TAGSNAME ]; then
+rm -f $TAGSNAME
+fi
+
+echo "ctags $TAGSNAME"
+ctags $FLAGS .

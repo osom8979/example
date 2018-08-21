@@ -1,0 +1,20 @@
+diff -urN irrlicht-1.8.1.ori/source/Irrlicht/Makefile irrlicht-1.8.1/source/Irrlicht/Makefile
+--- irrlicht-1.8.1.ori/source/Irrlicht/Makefile	2013-12-16 21:28:22 +0900
++++ irrlicht-1.8.1/source/Irrlicht/Makefile	2014-11-04 23:35:20 +0900
+@@ -85,6 +85,7 @@
+ #Linux specific options
+ staticlib sharedlib install: SYSTEM = Linux
+ STATIC_LIB = libIrrlicht.a
++IMPLIB = libIrrlicht.dll.a
+ LIB_PATH = ../../lib/$(SYSTEM)
+ INSTALL_DIR = /usr/local/lib
+ sharedlib install: SHARED_LIB = libIrrlicht.so
+@@ -138,7 +139,7 @@
+ all_win32 win32: sharedlib_win32
+ sharedlib_win32: $(IRRLICHT_DLL)
+ ../../bin/Win32-gcc/Irrlicht.dll: $(LINKOBJ)
+-	$(CXX) $(CPPFLAGS) $(CXXFLAGS) -shared -o $@ $^ $(LDFLAGS) -Wl,--out-implib,../../lib/Win32-gcc/$(STATIC_LIB)
++	$(CXX) $(CPPFLAGS) $(CXXFLAGS) -shared -o $@ $^ $(LDFLAGS) -Wl,--out-implib,../../lib/Win32-gcc/$(IMPLIB)
+ # Copies static lib into /lib/Win32-gcc
+ staticlib_win32: $(STATIC_LIB)
+ 	cp $^ $(LIB_PATH)

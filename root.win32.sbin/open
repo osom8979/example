@@ -1,0 +1,9 @@
+#!/bin/sh
+
+EXPLORER=explorer.exe
+
+if [ -z $1 ]; then
+    exec $EXPLORER
+else
+    exec $EXPLORER $1
+fi

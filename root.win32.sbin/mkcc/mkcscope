@@ -1,0 +1,51 @@
+#!/bin/sh
+
+# -------------------
+# Make cscope script.
+# -------------------
+
+if [ "$1" == "--noremove-temp" ]; then
+REMOVE_TEMP=0
+else
+REMOVE_TEMP=1
+fi
+
+# c source files.
+FFLAGS="-iname *.c"
+FFLAGS="$FFLAGS -o -iname *.cc"
+# c++ source files.
+FFLAGS="$FFLAGS -o -iname *.cp"
+FFLAGS="$FFLAGS -o -iname *.cxx"
+FFLAGS="$FFLAGS -o -iname *.cpp"
+FFLAGS="$FFLAGS -o -iname *.c++"
+# c/c++ header files.
+FFLAGS="$FFLAGS -o -iname *.h"
+FFLAGS="$FFLAGS -o -iname *.hpp"
+FFLAGS="$FFLAGS -o -iname *.hxx"
+# inline files.
+FFLAGS="$FFLAGS -o -iname *.inl"
+# assembler code files.
+FFLAGS="$FFLAGS -o -iname *.s"
+
+LIST_FILE=cscope.files
+CSCOPE_DB=cscope.out
+
+# cleanup.
+if [ -f $LIST_FILE ]; then rm -f $LIST_FILE; fi
+if [ -f $CSCOPE_DB ]; then rm -f $CSCOPE_DB; fi
+
+# create find script.
+find . $FFLAGS > $LIST_FILE
+
+if [ ! -f $LIST_FILE ]; then
+    echo "not found $LIST_FILE error."
+    exit 1
+else
+    echo "create $CSCOPE_DB"
+    cscope -b -i $LIST_FILE -f $CSCOPE_DB
+fi
+
+# Remove temp files.
+if [ "$REMOVE_TEMP" == "1" ]; then
+    if [ -f $LIST_FILE ]; then rm -f $LIST_FILE; fi
+fi

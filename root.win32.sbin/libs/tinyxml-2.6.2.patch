@@ -1,0 +1,22 @@
+diff -urN tinyxml-2.6.2.ori//Makefile tinyxml-2.6.2//Makefile
+--- tinyxml-2.6.2.ori//Makefile	2011-05-15 11:24:57 +0900
++++ tinyxml-2.6.2//Makefile	2014-10-02 00:04:20 +0900
+@@ -83,7 +83,7 @@
+ 
+ OUTPUT := xmltest
+ 
+-all: ${OUTPUT}
++all: ${OUTPUT} lib
+ 
+ 
+ #****************************************************************************
+@@ -128,3 +128,9 @@
+ tinyxmlparser.o: tinyxml.h tinystr.h
+ xmltest.o: tinyxml.h tinystr.h
+ tinyxmlerror.o: tinyxml.h tinystr.h
++
++LIB_OBJS := tinyxml.o tinyxmlparser.o tinyxmlerror.o tinystr.o
++lib: libtinyxml.a
++libtinyxml.a: ${LIB_OBJS}
++	$(AR) $@ $^
++	$(RANLIB) $@

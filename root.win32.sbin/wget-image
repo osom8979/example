@@ -1,0 +1,47 @@
+#!/bin/sh
+ 
+if [ ! -z $1 ]; then
+SITE=$1
+else
+echo Parameter error.
+exit 1
+fi
+ 
+WORKING=$PWD
+TMPDIR=$WORKING/tmp
+IMGDIR=$WORKING/img
+MVSOURCE=$TMPDIR/mv-list.sh
+TMPNUM=1
+
+export IMGDIR
+export TMPNUM
+
+WGET_FLAGS="-E -H -k -K -p"
+ 
+if [ ! -d $TMPDIR ]; then mkdir -p $TMPDIR; fi
+if [ ! -d $IMGDIR ]; then mkdir -p $IMGDIR; fi
+ 
+cd $TMPDIR
+wget $WGET_FLAGS $SITE
+find . -iname *.jpg -o -iname *.jpeg -o -iname *.png \
+    | sed -e 's/^\(.*\)\(\.jpg\|\.jpeg\|\.png\)$/mv \1\2 $IMGDIR\/$TMPNUM\2;TMPNUM=$\(\($TMPNUM+1\)\)/g' \
+    > $MVSOURCE
+source $MVSOURCE
+cd $IMGDIR
+
+if [ ! -z $2 ]; then
+FILENAME=$2
+else
+DATE=`date +%Y%m%d_%H-%M-%S`
+FILENAME=image-$DATE.zip
+fi
+
+# Unix version:
+#zip $WORKING/$FILENAME *
+# MinGW version:
+7za.exe a -tzip $WORKING/$FILENAME *
+
+# clear.
+cd $WORKING
+rm -rf $IMGDIR $TMPDIR
+echo end.

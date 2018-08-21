@@ -1,0 +1,101 @@
+#!/bin/sh
+
+## --------
+## METHODS.
+## --------
+
+declare -a LIB_NAMES
+declare -a LIB_URLS
+
+NOT_FOUND_LIBRARY_CODE=255
+LIB_SIZE=0
+
+function initVariable
+{
+    LIB_NAMES[$LIB_SIZE]=$1
+    LIB_URLS[$LIB_SIZE]=$2
+    let "LIB_SIZE += 1"
+}
+
+function printList()
+{
+    local size=${#LIB_NAMES[*]}
+    local index=0
+
+    while [ "$index" -lt "$size" ]; do
+        #echo "${LIB_NAMES[$index]}: ${LIB_URLS[$index]}"
+        echo "[$index] ${LIB_NAMES[$index]}"
+        let "index = $index + 1"
+    done
+}
+
+function getIndex()
+{
+    local size=${#LIB_NAMES[*]}
+    local index=0
+
+    while [ "$index" -lt "$size" ]; do
+        if [ "${LIB_NAMES[$index]}" == "$1" ]; then
+            return $index
+        fi
+        let "index = $index + 1"
+    done
+
+    return $NOT_FOUND_LIBRARY_CODE
+}
+
+## -------------
+## LIBRARY LIST.
+## -------------
+
+initVariable "opencv-2.4.10-windows" "http://jaist.dl.sourceforge.net/project/opencvlibrary/opencv-win/2.4.10/opencv-2.4.10.exe"
+initVariable "vim-7.4-src-rt" "ftp://ftp.vim.org/pub/vim/unix/vim-7.4.tar.bz2"
+initVariable "cmake-3.2.1" "http://www.cmake.org/files/v3.2/cmake-3.2.1.tar.gz"
+
+## -----
+## MAIN.
+## -----
+
+if [ -z $1 ]; then
+    printList
+    exit 1
+fi
+
+PARAM=$1
+
+if [ "$PARAM" == "--list" ]; then
+    printList
+    exit 0
+fi
+
+## check library number.
+IS_NUMBER_YES=y
+IS_NUMBER_NO=n
+IS_NUMBER=`echo $PARAM | grep -E '^[0-9]*$'`
+
+if [ ! -z $IS_NUMBER ]; then
+    if [ "$IS_NUMBER" -lt "$LIB_SIZE" ]; then
+        LIBRARY_INDEX=$IS_NUMBER
+    else
+        echo "Not found library number."
+        exit 1
+    fi
+else
+    getIndex $PARAM
+    LIBRARY_INDEX=$?
+
+    if [ "$LIBRARY_INDEX" -eq "$NOT_FOUND_LIBRARY_CODE" ]; then
+        echo "Not found library name."
+        exit 1
+    fi
+fi
+
+DESTINATION_NAME=${LIB_NAMES[$LIBRARY_INDEX]}
+DOWNLOAD_URL=${LIB_URLS[$LIBRARY_INDEX]}
+
+#echo LIBRARY_INDEX=$LIBRARY_INDEX
+#echo DESTINATION_NAME=$DESTINATION_NAME
+#echo DOWNLOAD_URL=$DOWNLOAD_URL
+
+echo "Download $DESTINATION_NAME"
+curl -O $DOWNLOAD_URL

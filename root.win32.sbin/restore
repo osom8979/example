@@ -1,0 +1,51 @@
+#!/bin/sh
+
+if [ -z $1 ]; then
+    echo "Unknown source directory error. (param1)"
+    exit 1
+elif [ -z $2 ]; then
+    echo "Unknown destination directory error. (param2)"
+    exit 1
+fi
+
+if [ -z $HOST ]; then
+    HOST=admin.blackhole-project.com
+fi
+if [ -z $PORT ]; then
+    PORT=8822
+fi
+
+PROTOCOL=sftp
+SOURCE_DIR=$1
+DESTINATION_DIR=$2
+URL=$PROTOCOL://$HOST:$PORT$SOURCE_DIR
+
+function checkExitError()
+{
+    local ERROR_CODE=$?
+
+    if [ $ERROR_CODE -ne 0 ]; then
+        echo "Error signal ($ERROR_CODE)"
+        exit $ERROR_CODE
+    fi
+}
+
+read -p "Repository username: " SFTP_USERNAME
+read -s -p "Repository password: " SFTP_PASSWORD
+echo
+
+DOWN_COMMAND="curl -u $SFTP_USERNAME:$SFTP_PASSWORD --insecure"
+LIST_COMMAND="$DOWN_COMMAND --list-only"
+
+if [ ! -d "$DESTINATION_DIR" ]; then
+  mkdir -p "$DESTINATION_DIR"
+fi
+
+$LIST_COMMAND $URL/ | egrep -v '^\.+$' | while read -r CURRENT_FILE; do
+    echo Download $CURRENT_FILE
+    $DOWN_COMMAND $URL/$CURRENT_FILE -o $DESTINATION_DIR/$CURRENT_FILE
+
+    checkExitError
+done
+
+echo "Restore end."

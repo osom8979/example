@@ -1,0 +1,52 @@
+#!/bin/sh
+
+# ------------------
+# Make ctags script.
+# ------------------
+
+if [ "$1" == "--noremove-temp" ]; then
+REMOVE_TEMP=0
+else
+REMOVE_TEMP=1
+fi
+
+TAGSHOME=~/.cache/ctags
+CTAGSSRC=tags.files.sh
+TAGSNAME=tags
+TAGNUMBER="0"
+#FINDPATH="$C_INCLUDE_PATH;."
+
+FLAGS="-a"
+FLAGS="$FLAGS --c++-kinds=+p --fields=+iaS --extra=+q" # OmniCppComplete.
+FLAGS="$FLAGS --exclude=boost" # Memory overflow.
+FLAGS="$FLAGS --tag-relative=no" # Absolute path.
+FLAGS="$FLAGS -R"
+
+export TAGSHOME
+export TAGNUMBER
+export FLAGS
+
+# cleanup.
+if [ -f $CTAGSSRC ]; then rm -f $CTAGSSRC; fi
+if [ -f $TAGSNAME ]; then rm -f $TAGSNAME; fi
+
+if [ ! -d $TAGSHOME ]; then
+    mkdir -p $TAGSHOME
+fi
+
+include-path --list \
+    | sed 's/^\(.*\)/ctags $FLAGS -f $TAGSHOME\/$TAGNUMBER.$TAGSNAME \1; TAGNUMBER=$\(\($TAGNUMBER+1\)\)/g' \
+    > $CTAGSSRC
+
+if [ ! -f $CTAGSSRC ]; then
+    echo "not found $CTAGSSRC error."
+    exit 1
+else
+    echo "create $TAGSNAME"
+    source $CTAGSSRC
+fi
+
+# Remove temp files.
+if [ "$REMOVE_TEMP" == "1" ]; then
+    if [ -f $CTAGSSRC ]; then rm -f $CTAGSSRC; fi
+fi

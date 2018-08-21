@@ -1,0 +1,12 @@
+diff -urN pdcurs34-ori/win32/mingwin32.mak pdcurs34/win32/mingwin32.mak
+--- pdcurs34-ori/win32/mingwin32.mak	Mon Jul 21 21:31:36 2008
++++ pdcurs34/win32/mingwin32.mak	Sun Mar 15 20:35:08 2015
+@@ -87,7 +87,7 @@
+ 
+ $(LIBCURSES) : $(LIBDEPS)
+ 	$(LIBEXE) $(LIBFLAGS) $@ $?
+-	-copy pdcurses.a panel.a
++	cp pdcurses.a panel.a
+ 
+ $(LIBOBJS) $(PDCOBJS) : $(PDCURSES_HEADERS)
+ $(PDCOBJS) : $(PDCURSES_WIN_H)

@@ -1,0 +1,71 @@
+#!/bin/sh
+
+# -------------------
+# Make cscope script.
+# -------------------
+
+if [ "$1" == "--noremove-temp" ]; then
+REMOVE_TEMP=0
+else
+REMOVE_TEMP=1
+fi
+
+# c source files.
+FFLAGS="-iname *.c"
+FFLAGS="$FFLAGS -o -iname *.cc"
+# c++ source files.
+FFLAGS="$FFLAGS -o -iname *.cp"
+FFLAGS="$FFLAGS -o -iname *.cxx"
+FFLAGS="$FFLAGS -o -iname *.cpp"
+FFLAGS="$FFLAGS -o -iname *.c++"
+# c/c++ header files.
+FFLAGS="$FFLAGS -o -iname *.h"
+FFLAGS="$FFLAGS -o -iname *.hpp"
+FFLAGS="$FFLAGS -o -iname *.hxx"
+# inline files.
+FFLAGS="$FFLAGS -o -iname *.inl"
+# assembler code files.
+FFLAGS="$FFLAGS -o -iname *.s"
+
+FIND_SCRIPT=cscope.finder.sh
+LIST_FILE=cscope.files
+CSCOPE_HOME=~/.cache/cscope
+CSCOPE_DB=$CSCOPE_HOME/cscope.out
+
+if [ ! -d $CSCOPE_HOME ]; then
+    mkdir -p $CSCOPE_HOME
+fi
+
+# cleanup.
+if [ -f $FIND_SCRIPT ]; then rm -f $FIND_SCRIPT; fi
+if [ -f $LIST_FILE ];   then rm -f $LIST_FILE; fi
+if [ -f $CSCOPE_DB ];   then rm -f $CSCOPE_DB; fi
+
+export FFLAGS;
+export LIST_FILE;
+
+# create find script.
+include-path --list \
+    | sed 's/^\(.*\)/find \1 $FFLAGS >> $LIST_FILE/g' \
+    > $FIND_SCRIPT
+
+if [ ! -f $FIND_SCRIPT ]; then
+    echo "not found $FIND_SCRIPT error."
+    exit 1
+else
+    source $FIND_SCRIPT
+fi
+
+if [ ! -f $LIST_FILE ]; then
+    echo "not found $LIST_FILE error."
+    exit 1
+else
+    echo "create $CSCOPE_DB"
+    cscope -b -i $LIST_FILE -f $CSCOPE_DB
+fi
+
+# Remove temp files.
+if [ "$REMOVE_TEMP" == "1" ]; then
+    if [ -f $FIND_SCRIPT ]; then rm -f $FIND_SCRIPT; fi
+    if [ -f $LIST_FILE ];   then rm -f $LIST_FILE; fi
+fi

@@ -1,0 +1,60 @@
+#!/bin/sh
+
+## -----------------------
+## Directory path setting.
+## -----------------------
+
+DATE_FORMAT=`date +%Y%m%d_%H-%M-%S`
+TEMP_FILE=.temp-$DATE_FORMAT
+
+## Convert Windows style directory to MSYS(UNIX) style directory.
+env \
+    | sort \
+    | grep '^[_a-z,A-Z,0-9]*=.*$' \
+    | grep '[a-z,A-Z]:\\' \
+    | sed 's;\([a-z,A-Z]\):\\;/\1/;g' \
+    | sed 's;\\\\;\\;g' \
+    | sed 's;\\;/;g' \
+    | sed 's/;/:/g' \
+    | sed 's;\(^.*\);export \1;' \
+    | sed 's;\(^export .*=\)\([^"].*[^"]\)$;\1"\2";' \
+    > $TEMP_FILE
+source $TEMP_FILE
+rm $TEMP_FILE
+
+## ------------------
+## Developer setting.
+## ------------------
+
+## Force PREFIX setting.
+if [ -z $PREFIX ]; then
+    if [ -z $LOCAL ]; then
+        PREFIX=/usr/local
+    else
+        PREFIX=$LOCAL
+    fi
+fi
+
+C_INCLUDE_PATH_FLAG=`echo $C_INCLUDE_PATH \
+    | sed 's;:[ ]*\\(/[a-z,A-Z]/\\); -I\\1;g' \
+    | sed 's;^[ ]*\\(/[a-z,A-Z]/\\);-I\\1;g'`
+CPLUS_INCLUDE_PATH_FLAG=`echo $CPLUS_INCLUDE_PATH \
+    | sed 's;:[ ]*\\(/[a-z,A-Z]/\\); -I\\1;g' \
+    | sed 's;^[ ]*\\(/[a-z,A-Z]/\\);-I\\1;g'`
+LIBRARY_PATH_FLAG=`echo $LIBRARY_PATH \
+    | sed 's;:[ ]*\\(/[a-z,A-Z]/\\); -L\\1;g' \
+    | sed 's;^[ ]*\\(/[a-z,A-Z]/\\);-L\\1;g'`
+
+export C_INCLUDE_PATH_FLAG
+export CPLUS_INCLUDE_PATH_FLAG
+export LIBRARY_PATH_FLAG
+
+CPPFLAGS=
+CFLAGS="-I$PREFIX_INC $C_INCLUDE_PATH_FLAG"
+CXXFLAGS="-I$PREFIX_INC $CPLUS_INCLUDE_PATH_FLAG"
+LDFLAGS="-L$PREFIX_LIB $LIBRARY_PATH_FLAG"
+
+export CPPFLAGS
+export CFLAGS
+export CXXFLAGS
+export LDFLAGS

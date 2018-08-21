@@ -1,0 +1,16 @@
+#!/bin/sh
+
+GCC_INCLUDE_PATH=`g++ -E -v -x c++ - < /dev/null 2>&1 \
+    | awk -f $SBIN/include-list.awk \
+    | sed -e 's/[ \r\n\t]\+/ /g' \
+    | sed -e 's/ \. / /g'`
+
+if [ "$1" == "--list" ]; then
+echo $GCC_INCLUDE_PATH \
+    | sed 's;\\\\;\\;g' \
+    | sed 's;\\;/;g' \
+    | sed 's/ /\n/g' \
+    | sed '/^ *$/d'
+else
+echo $GCC_INCLUDE_PATH
+fi
