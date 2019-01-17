@@ -1,0 +1,5 @@
+Database: False
+Filename: /Users/zer0/Project/example/ffmpeg/simple/main.cpp
+Flags: ['-Wall', '-Wextra', '-Werror', '-Wno-long-long', '-Wno-variadic-macros', '-fexceptions', '-isystem', '/usr/include', '-isystem', '/usr/local/include', '-I.', '-I./include', '-I./src', '-std=c++14', '-x', 'c++']
+Working: /Users/zer0/Project/example/ffmpeg
+
