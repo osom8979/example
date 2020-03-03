@@ -1,0 +1,10 @@
+Template: example/question1
+Type: boolean
+Default: false
+Description: question1?
+
+Template: example/question2
+Type: boolean
+Default: false
+Description: question2?
+

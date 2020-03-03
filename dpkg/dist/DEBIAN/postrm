@@ -1,0 +1,99 @@
+#!/usr/bin/env bash
+# http://man7.org/linux/man-pages/man5/deb-postrm.5.html
+
+# postrm remove
+# After the package was removed.
+function remove_main
+{
+    echo "[postrm] remove()"
+}
+
+# postrm purge
+# After the package was purged.
+function purge_main
+{
+    echo "[postrm] purge()"
+}
+
+# old-postrm upgrade new-version
+# After the package was upgraded.
+function upgrade_main
+{
+    local new_version=$1
+    echo "[old-postrm] upgrade(new-version=${new_version})"
+}
+
+# new-postrm failed-upgrade old-version new-version
+# If the above upgrade call fails.
+function failed_upgrade_main
+{
+    local old_version=$1
+    local new_version=$2
+    echo "[new-postrm] failed-upgrade(old-version=${old_version},new-version=${new_version})"
+}
+
+# postrm disappear overwriter-package overwriter-version
+# After all of the packages files have been replaced.
+function disappear_main
+{
+    local overwriter_package=$1
+    local overwriter_version=$2
+    echo "[postrm] disappear(overwriter-package=${overwriter_package},overwriter-version=${overwriter_version})"
+}
+
+# new-postrm abort-install
+# If preinst fails during install.
+function abort_install_main
+{
+    echo "[new-postrm] abort-install()"
+}
+
+# new-postrm abort-install old-version new-version
+# If preinst fails during upgrade of removed package.
+function abort_install_args_main
+{
+    local old_version=$1
+    local new_version=$2
+    echo "[new-postrm] abort-install(old-version=${old_version},new-version=${new_version})"
+}
+
+# new-postrm abort-upgrade old-version new-version
+# If preinst fails during upgrade.
+function abort_upgrade_main
+{
+    local old_version=$1
+    local new_version=$2
+    echo "[new-postrm] abort-upgrade(old-version=${old_version},new-version=${new_version})"
+}
+
+case "$1" in
+remove)
+    remove_main
+    ;;
+purge)
+    purge_main
+    ;;
+upgrade)
+    upgrade_main $2
+    ;;
+failed-upgrade)
+    failed_upgrade_main $2 $3
+    ;;
+disappear)
+    disappear_main $2 $3
+    ;;
+abort-install)
+    if [[ -z $2 ]]; then
+        abort_install_main
+    else
+        abort_install_args_main $2 $3
+    fi
+    ;;
+abort-upgrade)
+    abort_upgrade_main
+    ;;
+*)
+    echo 'Unrecognized argument:' $@
+    ;;
+esac
+

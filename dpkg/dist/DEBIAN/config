@@ -1,0 +1,11 @@
+#!/usr/bin/env bash
+set -e
+
+. /usr/share/debconf/confmodule
+
+db_beginblock
+db_input high example/question1 || true
+db_input high example/question2 || true
+db_endblock
+db_go || true
+

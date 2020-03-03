@@ -1,0 +1,81 @@
+#!/usr/bin/env bash
+# http://man7.org/linux/man-pages/man5/deb-prerm.5.html
+
+# prerm remove
+# Before the package is removed.
+function remove_main
+{
+    echo "[prerm] remove()"
+}
+
+# old-prerm upgrade new-version
+# Before an upgrade.
+function upgrade_main
+{
+    local new_version=$1
+    echo "[old-prerm] upgrade(new-version=${new_version})"
+}
+
+# new-prerm failed-upgrade old-version new-version
+# If the above upgrade fails.
+function failed_upgrade_main
+{
+    local old_version=$1
+    local new_version=$2
+    echo "[new-prerm] failed-upgrade(old-version=${old_version},new-version=${new_version})"
+}
+
+# prerm deconfigure in-favour new-package new-version
+#     [ removing old-package old-version ]
+# Before package is deconfigured while dependency is replaced
+# due to conflict.
+function deconfigure_main
+{
+    local in_favour=$1
+    local new_package=$2
+    local new_version=$3
+    echo "[prerm] deconfigure(in-favour=${in_favour},new-package=${new_package},new-version=${new_version})"
+}
+
+function removing_main
+{
+    local old_package=$1
+    local old_version=$2
+    echo "[prerm] removing(old-package=${old_package},old-version=${old_version})"
+}
+
+# prerm remove in-favour new-package new-version
+# Before the package is replaced due to conflict.
+function remove_args_main
+{
+    local in_favour=$1
+    local new_package=$2
+    local new_version=$3
+    echo "[prerm] remove(in-favour=${in_favour},new-package=${new_package},new-version=${new_version})"
+}
+
+case "$1" in
+remove)
+    if [[ -z $2 ]]; then
+        remove_main
+    else
+        remove_args_main $2 $3 $4
+    fi
+    ;;
+upgrade)
+    upgrade_main $2
+    ;;
+failed-upgrade)
+    failed_upgrade_main $2 $3
+    ;;
+deconfigure)
+    deconfigure_main $2 $3 $4
+    ;;
+removing)
+    removing_main $2 $3
+    ;;
+*)
+    echo 'Unrecognized argument:' $@
+    ;;
+esac
+

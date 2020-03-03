@@ -1,0 +1,66 @@
+#!/usr/bin/env bash
+# http://man7.org/linux/man-pages/man5/deb-preinst.5.html
+
+. /usr/share/debconf/confmodule
+
+db_get example/question1
+ANSWER1=$RET
+echo "Answer1?: ${ANSWER1}"
+
+db_get example/question2
+ANSWER2=$RET
+echo "Answer2?: ${ANSWER2}"
+
+# new-preinst install
+# Before the package is installed.
+function install_main
+{
+    echo "[new-preinst] install()"
+
+}
+
+# new-preinst install old-version new-version
+# Before removed package is upgraded.
+function install_args_main
+{
+    local old_version=$1
+    local new_version=$2
+    echo "[new-preinst] install(old-version=${old_version},new-version=${new_version})"
+}
+
+# new-preinst upgrade old-version new-version
+# Before the package is upgraded.
+function upgrade_main
+{
+    local old_version=$1
+    local new_version=$2
+    echo "[new-preinst] upgrade(old-version=${old_version},new-version=${new_version})"
+}
+
+# old-preinst abort-upgrade new-version
+# If postrm fails during upgrade or fails on failed upgrade.
+function abort_upgrade_main
+{
+    local new_version=$1
+    echo "[old-preinst] abort-upgrade(new-version=${new_version})"
+}
+
+case "$1" in
+install)
+    if [[ -z $2 ]]; then
+        install_main
+    else
+        install_args_main $2 $3
+    fi
+    ;;
+upgrade)
+    upgrade_main $2 $3
+    ;;
+abort-upgrade)
+    abort_upgrade_main $2
+    ;;
+*)
+    echo 'Unrecognized argument:' $@
+    ;;
+esac
+

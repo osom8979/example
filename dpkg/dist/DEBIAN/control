@@ -1,0 +1,9 @@
+Package: example
+Version: 0.0.1
+Section: net
+Priority: optional
+Architecture: amd64 
+Depends: debconf (>= 0.2.26)
+Maintainer: zer0 <osom8979@gmail.com>
+Homepage: https://github.com/osom8979/example.git
+Description: Example package.

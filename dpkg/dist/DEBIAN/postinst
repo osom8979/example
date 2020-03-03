@@ -1,0 +1,92 @@
+#!/usr/bin/env bash
+# http://man7.org/linux/man-pages/man5/deb-postinst.5.html
+
+# postinst configure old-version
+# After the package was installed.
+function configure_main
+{
+    local old_version=$1
+    echo "[postinst] configure(old-version=${old_version})"
+}
+
+# postinst triggered trigger-name...
+# After the package was triggered.
+function triggered_main
+{
+    local trigger_names=$@
+    echo "[postinst] triggered(trigger-name=${trigger_names})"
+}
+
+# old-postinst abort-upgrade new-version
+# If prerm fails during upgrade or fails on failed upgrade.
+function abort_upgrade_main
+{
+    local new_version=$1
+    echo "[old-postinst] abort-upgrade(new-version=${new_version})"
+}
+
+# old-postinst abort-remove
+# If prerm fails during removal.
+function abort_remove_main
+{
+    echo "[old-postinst] abort-remove()"
+}
+
+# postinst abort-deconfigure in-favour new-package new-version
+#        [ removing old-package old-version ]
+# If prerm fails during deconfiguration of a package.
+function abort_deconfigure_main
+{
+    local in_favour=$1
+    local new_package=$2
+    local new_version=$3
+    echo "[postinst] abort-deconfigure(in-favour=${in_favour},new-package=${new_package},new-version=${new_version})"
+}
+
+function removing_main
+{
+    local old_package=$1
+    local old_version=$2
+    echo "[postinst] removing(old-package=${old_package},old-version=${old_version})"
+}
+
+# postinst abort-remove in-favour new-package new-version
+# If prerm fails during replacement due to conflict.
+function abort_remove_args_main
+{
+    local in_favour=$1
+    local new_package=$2
+    local new_version=$3
+    echo "[postinst] abort-deconfigure(in-favour=${in_favour},new-package=${new_package},new-version=${new_version})"
+}
+
+_all_args=$@
+
+case "$1" in
+configure)
+    configure_main $2
+    ;;
+triggered)
+    triggered_main ${_all_args:1}
+    ;;
+abort-upgrade)
+    abort_upgrade_main $2
+    ;;
+abort-remove)
+    if [[ -z $2 ]]; then
+        abort_remove_main
+    else
+        abort_remove_args_main $2 $3 $4
+    fi
+    ;;
+abort-deconfigure)
+    abort_deconfigure_main $2 $3 $4
+    ;;
+removing)
+    removing_main $2 $3
+    ;;
+*)
+    echo 'Unrecognized argument:' $@
+    ;;
+esac
+
