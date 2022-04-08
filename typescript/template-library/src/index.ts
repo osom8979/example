@@ -1,5 +1,5 @@
 export default class ReccApi {
-  get name() {
-    return 'recc-api';
+  encryptPassword(password: string): string {
+    return password;
   }
 }
