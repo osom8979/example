@@ -94,5 +94,11 @@
     "htmlWhitespaceSensitivity": "ignore",
     "vueIndentScriptAndStyle": false,
     "endOfLine": "lf"
+  },
+  "jest": {
+      "preset": "ts-jest",
+      "moduleNameMapper": {
+          "@/(.*)$": "<rootDir>/src/$1"
+      }
   }
 }
