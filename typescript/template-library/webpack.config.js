@@ -39,6 +39,9 @@ const config = {
   },
   resolve: {
     extensions,
+    alias: {
+      '@': srcDir,
+    },
   },
 };
 
