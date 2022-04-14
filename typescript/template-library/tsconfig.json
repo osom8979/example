@@ -2,12 +2,13 @@
   "compilerOptions": {
     "allowSyntheticDefaultImports": true,
     "noImplicitAny": true,
-    "module": "es6",
-    "target": "es5",
+    "skipLibCheck": true,
+    "module": "esnext",
+    "target": "esnext",
     "allowJs": true,
     "moduleResolution": "node",
+    "baseUrl": ".",
     "paths": {
-      "*.ts": ["*"],
       "@/*": ["src/*"]
     }
   },
